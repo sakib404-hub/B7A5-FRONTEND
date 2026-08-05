@@ -10,14 +10,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Briefcase, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { registerAction } from "../_actions/registerAction";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 const RegisterForm = () => {
+  const [registerState, action, pending] = useActionState(registerAction, null);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(()=>{
+    if(!registerState){
+      return;
+    }
+    if(!registerState.success){
+      // console.log(registerState)
+      toast.error(registerState.messagge || "Account Creation Failed.");
+      return;
+    }
+    toast.success(registerState.messagge || "Account Creation Successfull");
+    redirect('/login');
+
+  },[registerState])
   return (
     <div>
       {/* Register Form */}
-      <form className="space-y-5">
+      <form action={action} className="space-y-5">
         {/* Name */}
         <div className="space-y-2">
           <Label htmlFor="name">Full Name</Label>
@@ -139,7 +158,14 @@ const RegisterForm = () => {
 
         {/* Register Button */}
         <Button type="submit" className="w-full">
-          Create Account
+          {pending ? (
+            <span className="flex items-center gap-2">
+              Processing
+              <Spinner />
+            </span>
+          ) : (
+            "Create Account"
+          )}
         </Button>
       </form>
     </div>

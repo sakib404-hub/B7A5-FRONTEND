@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Oxanium, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Footer } from "@/components/shared/footer";
+import { Toaster } from "@/components/ui/sonner";
 
 const robotoHeading = Roboto({subsets:['latin'],variable:'--font-heading'});
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         {children}
+        <Toaster></Toaster>
         <Footer></Footer>
       </body>
     </html>
