@@ -1,5 +1,6 @@
 "use client";
 
+import { CategoryCardProps } from "@/types/types";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -15,17 +16,6 @@ import {
   Backpack,
   Shield,
 } from "lucide-react";
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: string;
-}
-
-interface CategoryCardProps {
-  category: Category;
-}
 
 const iconMap = {
   Camping: Tent,

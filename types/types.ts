@@ -49,3 +49,44 @@ export interface ICategory {
   description : string;
   createdAt : string;
 }
+
+interface Provider {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Review {
+  id?: string;
+  rating?: number;
+}
+
+export interface Gear {
+  id: string;
+  title: string;
+  description: string;
+  pricePerDay: number;
+  brand: string;
+  stockQuantity: number;
+  status: "AVAILABLE" | "UNAVAILABLE";
+  providerId: string;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  provider: Provider;
+  reviews: Review[];
+}
+
+export interface GearCardProps {
+  gear: Gear;
+}
+export interface Category {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+}
+
+export interface CategoryCardProps {
+  category: Category;
+}
