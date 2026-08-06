@@ -21,7 +21,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { NavbarProps } from "@/types/types";
+import { logOut } from "@/services/logOut";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -30,33 +33,11 @@ const navItems = [
   { label: "How It Works", href: "/how-it-works" },
 ];
 
-interface Reviews {
-  id: string;
-  comment: string;
-  rating: string;
-}
-
-interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-  phone: string;
-  address: string;
-  createdAt: string;
-  updatedAt: string;
-  reviews: Reviews[];
-}
-
-interface NavbarProps {
-  user?: IUser | null;
-}
-
 export const Navbar = ({ user }: NavbarProps) => {
   const handleLogout = async () => {
-    // Call your logout server action here
-    // await logoutAction();
+    await logOut();
+    toast.success("User Logged Out Successfully.");
+    redirect('/login');
   };
 
   return (

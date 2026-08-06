@@ -1,17 +1,7 @@
 "use server"
 
+import { RegisterState } from "@/types/types";
 
-export interface RegisterState {
-    success : boolean;
-    statusCode : number;
-    message : string;
-    data : {
-        name : string;
-        email : string;
-        password : string;
-        role : string;
-    }
-}
 
 export const registerAction = async(previousState : RegisterState, formData : FormData)=>{
 

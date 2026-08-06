@@ -2,16 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-
-interface LoginState {
-    success : boolean;
-    statusCode : number;
-    message : string;
-    data : {
-        accessToken : string;
-        refreshToken : string;
-    }
-}
+import { LoginState } from "@/types/types";
 
 export const loginAction = async(previousState : LoginState, formData : FormData)=>{
     const payLoad = {
