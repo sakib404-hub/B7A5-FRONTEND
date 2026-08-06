@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { LoginState } from "@/types/types";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const loginAction = async(previousState : LoginState, formData : FormData)=>{
     const payLoad = {
@@ -35,7 +36,15 @@ export const loginAction = async(previousState : LoginState, formData : FormData
             maxAge : 60 * 60 * 24 * 7
         });
 
-        redirect('/');
+        const decoded = jwt.decode(result.data.accessToken) as JwtPayload;
+
+        if(decoded.role === "CUSTOMER"){
+        redirect('/customer-dashboard');
+        }else if(decoded.role === "ADMIN"){
+            redirect('/admin-dashboard')
+        }else if(decoded.role === "PROVIDER"){
+            redirect('/provider-dashboard')
+        }
     }
 
     return result;
