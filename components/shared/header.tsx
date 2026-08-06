@@ -40,6 +40,12 @@ export const Navbar = ({ user }: NavbarProps) => {
     redirect('/login');
   };
 
+  const dashboardPath = {
+  CUSTOMER: "/customer-dashboard",
+  PROVIDER: "/provider-dashboard",
+  ADMIN: "/admin-dashboard",
+}[user?.role ?? "CUSTOMER"];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -102,7 +108,7 @@ export const Navbar = ({ user }: NavbarProps) => {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="cursor-pointer">
+                  <Link href={dashboardPath!} className="cursor-pointer">
                     <LayoutDashboard className="mr-2 size-4" />
                     Dashboard
                   </Link>
@@ -198,6 +204,7 @@ export const Navbar = ({ user }: NavbarProps) => {
                     </div>
                   </div>
 
+                {/* user menu  */}
                   <Button variant="ghost" asChild className="justify-start">
                     <Link href="/dashboard">
                       <LayoutDashboard className="mr-2 size-4" />
