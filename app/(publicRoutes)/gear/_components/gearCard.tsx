@@ -9,6 +9,7 @@ import {
   Star,
   User,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 
 const GearCard = ({ gear }: GearCardProps) => {
@@ -142,6 +143,7 @@ const GearCard = ({ gear }: GearCardProps) => {
             whileHover={{
               scale: 1.05,
             }}
+            onClick={()=>{ redirect(`/gear/${gear.id}`) }}
             whileTap={{
               scale: 0.95,
             }}
