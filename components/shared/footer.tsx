@@ -22,7 +22,6 @@ const footerLinks = {
     { label: "Browse Gear", href: "/gear" },
     { label: "Categories", href: "/categories" },
     { label: "How It Works", href: "/how-it-works" },
-    { label: "Become a Provider", href: "/provider" },
   ],
 
   company: [
