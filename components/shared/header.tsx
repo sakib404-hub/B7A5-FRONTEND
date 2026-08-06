@@ -1,13 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, User, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, User, LogOut, LayoutDashboard } from "lucide-react";
 
 import { Button } from "../ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
+import { Avatar, AvatarFallback } from "../ui/avatar";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -16,11 +30,38 @@ const navItems = [
   { label: "How It Works", href: "/how-it-works" },
 ];
 
-export const Navbar = () => {
+interface Reviews {
+  id: string;
+  comment: string;
+  rating: string;
+}
+
+interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  phone: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+  reviews: Reviews[];
+}
+
+interface NavbarProps {
+  user?: IUser | null;
+}
+
+export const Navbar = ({ user }: NavbarProps) => {
+  const handleLogout = async () => {
+    // Call your logout server action here
+    // await logoutAction();
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -47,19 +88,74 @@ export const Navbar = () => {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 px-2"
+                >
+                  <div className="flex size-9 items-center justify-center rounded-full bg-primary/10">
+                    <User className="size-5 text-primary" />
+                  </div>
 
-          <Button asChild>
-            <Link href="/register">Get Started</Link>
-          </Button>
+                  <div className="hidden flex-col items-start lg:flex">
+                    <span className="text-sm font-medium">{user?.name || "User"}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {user?.role?.toLowerCase() || " "}
+                    </span>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
 
-          <Button variant="outline" size="icon" asChild>
-            <Link href="/profile" aria-label="Profile">
-              <User className="size-4" />
-            </Link>
-          </Button>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{user?.name || "Guest"}</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {user?.email || "guest@gmail.com"}
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard" className="cursor-pointer">
+                    <LayoutDashboard className="mr-2 size-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="cursor-pointer">
+                    <User className="mr-2 size-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer text-destructive focus:text-destructive"
+                >
+                  <LogOut className="mr-2 size-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="outline" asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+
+              <Button asChild>
+                <Link href="/register">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu */}
@@ -103,24 +199,58 @@ export const Navbar = () => {
 
               <div className="my-4 border-t" />
 
-              <Button variant="outline" asChild className="justify-start">
-                <Link href="/login">Login</Link>
-              </Button>
+              {user ? (
+                <>
+                  {/* Mobile User Info */}
+                  <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-primary/10">
+                      <User className="size-5 text-primary" />
+                    </div>
 
-              <Button asChild className="justify-start">
-                <Link href="/register">Get Started</Link>
-              </Button>
+                    <div className="flex min-w-0 flex-col">
+                      <span className="truncate text-sm font-medium">
+                        {user?.name || "Guest"}
+                      </span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {user?.email || "guest@gmail.com"}
+                      </span>
+                    </div>
+                  </div>
 
-              <Button
-                variant="ghost"
-                asChild
-                className="justify-start"
-              >
-                <Link href="/profile">
-                  <User className="mr-2 size-4" />
-                  My Profile
-                </Link>
-              </Button>
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link href="/dashboard">
+                      <LayoutDashboard className="mr-2 size-4" />
+                      Dashboard
+                    </Link>
+                  </Button>
+
+                  <Button variant="ghost" asChild className="justify-start">
+                    <Link href="/profile">
+                      <User className="mr-2 size-4" />
+                      Profile
+                    </Link>
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="justify-start text-destructive hover:text-destructive"
+                  >
+                    <LogOut className="mr-2 size-4" />
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" asChild className="justify-start">
+                    <Link href="/login">Login</Link>
+                  </Button>
+
+                  <Button asChild className="justify-start">
+                    <Link href="/register">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>

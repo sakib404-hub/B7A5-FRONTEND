@@ -8,10 +8,7 @@ export const getMyProfile = async()=>{
     const accessToken = cookieStore.get('accessToken')?.value;
 
     if(!accessToken){
-        return {
-            success : false,
-            message : "User not logged In."
-        }
+        return null;
     }
 
     const res = await fetch(`${process.env.BACKEND_APP_URL}/api/auth/me`, {
@@ -28,5 +25,5 @@ export const getMyProfile = async()=>{
     });
 
     const result = await res.json();
-    return result;
+    return result.data;
 }

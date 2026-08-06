@@ -4,9 +4,10 @@ import React from 'react'
 
 const Publiclayout = async({children} : {children : React.ReactNode}) => {
   const user = await getMyProfile()
+  
   return (
     <>
-    <Navbar></Navbar>
+    <Navbar user={user}></Navbar>
       {children}
     </>
   )
