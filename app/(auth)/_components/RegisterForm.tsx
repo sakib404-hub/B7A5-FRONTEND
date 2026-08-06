@@ -26,10 +26,10 @@ const RegisterForm = () => {
     }
     if(!registerState.success){
       // console.log(registerState)
-      toast.error(registerState.messagge || "Account Creation Failed.");
+      toast.error(registerState.message || "Account Creation Failed.");
       return;
     }
-    toast.success(registerState.messagge || "Account Creation Successfull");
+    toast.success(registerState.message || "Account Creation Successfull");
     redirect('/login');
 
   },[registerState])

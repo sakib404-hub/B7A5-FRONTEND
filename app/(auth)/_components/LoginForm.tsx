@@ -5,15 +5,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { loginAction } from "../_actions/loginAction";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 export const LoginForm = () => {
+  const [state, action, pending] = useActionState(loginAction, null);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (!state.success) {
+      toast.error(state.message || "Login Failed.");
+      return;
+    }
+
+    toast.success(state.message || "Successfully Logged In.");
+    redirect("/");
+  }, [state]);
 
   return (
     <div>
       {/* Login Form */}
-      <form className="space-y-5">
+      <form action={action} className="space-y-5">
         {/* Email */}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
@@ -57,24 +75,31 @@ export const LoginForm = () => {
               required
             />
             <button
-            type="button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {" "}
-            {showPassword ? (
-              <EyeOff className="h-4 w-4" />
-            ) : (
-              <Eye className="h-4 w-4" />
-            )}
-          </button>
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {" "}
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
           </div>
         </div>
 
         {/* Login Button */}
         <Button type="submit" className="w-full">
-          Login
+          {pending ? (
+            <span className="flex items-center gap-2">
+              Processing
+              <Spinner />
+            </span>
+          ) : (
+            "Login"
+          )}
         </Button>
       </form>
     </div>
