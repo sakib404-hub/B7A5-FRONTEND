@@ -1,10 +1,11 @@
+import { getMyProfile } from '@/services/getMyProfile';
 import React from 'react'
+import RoleBasedDashboard from '../_components/roleBasedDashboard';
 
-const ProviderDashboardPage = () => {
+const ProviderDashboardPage = async() => {
+  const user = await getMyProfile();
   return (
-    <div>
-      This is the provider dashboard!
-    </div>
+    <RoleBasedDashboard user={user}></RoleBasedDashboard>
   )
 }
 

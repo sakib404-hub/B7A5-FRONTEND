@@ -4,7 +4,7 @@ interface Reviews {
   rating: string;
 }
 
-interface IUser {
+export interface IUser {
   id: string;
   name: string;
   email: string;

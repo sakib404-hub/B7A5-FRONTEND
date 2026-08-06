@@ -1,10 +1,11 @@
 import React from 'react'
+import RoleBasedDashboard from '../_components/roleBasedDashboard';
+import { getMyProfile } from '@/services/getMyProfile';
 
-const AdminDashboardPage = () => {
+const AdminDashboardPage = async() => {
+  const user = await getMyProfile();
   return (
-    <div>
-        This is the admin dashboard page!
-    </div>
+    <RoleBasedDashboard user={user}></RoleBasedDashboard>
   )
 }
 
