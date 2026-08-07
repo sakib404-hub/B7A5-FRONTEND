@@ -1,4 +1,4 @@
-import { IUser } from "@/types/types";
+import { IUser, UserRole } from "@/types/types";
 import AdminDashboard from "./adminDashboard";
 import CustomerDashboard from "./customerDashboard";
 import ProviderDashboard from "./providerDashboard";
@@ -7,12 +7,12 @@ import ProviderDashboard from "./providerDashboard";
 
 
 const RoleBasedDashboard = ({ user }: { user: IUser }) => {
-  switch ((user.role).toLowerCase()) {
-    case "customer":
+  switch (user.role) {
+    case UserRole.CUSTOMER:
       return <CustomerDashboard user={user} />;
-    case "provider":
+    case UserRole.PROVIDER:
       return <ProviderDashboard user={user} />;
-    case "admin":
+    case UserRole.ADMIN:
       return <AdminDashboard user={user} />;
     default:
       return <div>Unauthorized</div>;

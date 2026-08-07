@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { IUser } from "@/types/types";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({user} : {user : IUser}) => {
   return (
     <div>
       <div className="mb-8">

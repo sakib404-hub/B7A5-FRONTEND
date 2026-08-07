@@ -41,25 +41,27 @@ const footerLinks = {
 const socialLinks = [
   {
     label: "Facebook",
-    href: "#",
+    href: "https://www.facebook.com/ariyanahmed.shakib.18",
     icon: FaFacebook,
   },
   {
     label: "Instagram",
-    href: "#",
+    href: "https://www.instagram.com/ariyanahmed.shakib.18",
     icon: FaInstagram,
   },
   {
     label: "LinkedIn",
-    href: "#",
+    href: "https://www.linkedin.com/in/sakibhossen-dev7011/",
     icon: FaLinkedin,
   },
   {
     label: "GitHub",
-    href: "#",
+    href: "https://github.com/sakib404-hub",
     icon: FaGithub,
   },
 ];
+
+
 export const Footer = () => {
   return (
     <footer className="border-t bg-muted/30">

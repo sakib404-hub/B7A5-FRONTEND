@@ -1,9 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { IUser } from "@/types/types";
 import { motion } from "framer-motion";
 
-const CustomerDashboard = ({ user }: any) => {
+const CustomerDashboard = ({ user }: {user : IUser}) => {
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-6">

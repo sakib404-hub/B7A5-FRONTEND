@@ -1,21 +1,38 @@
-interface Reviews {
+export interface Reviews {
   id: string;
   comment: string;
   rating: string;
 }
 
+//? user interfaces
+
+//? ROLE
+export enum UserRole  {
+  ADMIN = 'ADMIN',
+  PROVIDER = 'PROVIDER',
+  CUSTOMER = 'CUSTOMER'
+}
+
+//? USER STATUS
+export enum UserStatus  {
+  ACTIVE = 'ACTIVE',
+  BLOCKED = 'BLOCKED'
+}
+
+//? USER
 export interface IUser {
   id: string;
   name: string;
   email: string;
-  role: string;
-  status: string;
+  role: UserRole;
+  status: UserStatus;
   phone: string;
   address: string;
   createdAt: string;
   updatedAt: string;
   reviews: Reviews[];
 }
+
 
 export interface NavbarProps {
   user?: IUser | null;
@@ -61,6 +78,11 @@ interface Review {
   rating?: number;
 }
 
+export enum GearStatus {
+  AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE'
+}
+
 export interface Gear {
   id: string;
   title: string;
@@ -68,7 +90,7 @@ export interface Gear {
   pricePerDay: number;
   brand: string;
   stockQuantity: number;
-  status: "AVAILABLE" | "UNAVAILABLE";
+  status: GearStatus;
   providerId: string;
   categoryId: string;
   createdAt: string;
@@ -90,3 +112,15 @@ export interface Category {
 export interface CategoryCardProps {
   category: Category;
 }
+
+
+export interface SidebarProps {
+  role: UserRole;
+}
+
+export interface SidebarItemConfig {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+}
+
