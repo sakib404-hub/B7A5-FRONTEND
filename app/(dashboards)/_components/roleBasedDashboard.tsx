@@ -1,5 +1,5 @@
 import { IUser, UserRole } from "@/types/types";
-import AdminDashboard from "./adminDashboard";
+import AdminDashboard from "../admin-dashboard/_components/adminDashboard";
 import CustomerDashboard from "./customerDashboard";
 import ProviderDashboard from "./providerDashboard";
 

@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IUser } from "@/types/types";
+import { getAdminSummary } from "../_actions/getAdminSummery";
 
-const AdminDashboard = ({user} : {user : IUser}) => {
+const AdminDashboard = async({user} : {user : IUser}) => {
+  const adminSummery = await getAdminSummary();
+  console.log(adminSummery);
+
+  
   return (
     <div>
       <div className="mb-8">
