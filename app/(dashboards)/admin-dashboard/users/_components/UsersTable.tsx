@@ -239,7 +239,7 @@ export const UserTable = ({ users }: UserTableProps) => {
 
                       {/* Address */}
                       <TableCell>
-                        <span className="block max-w-[180px] truncate text-sm text-slate-600">
+                        <span className="block max-w-45 truncate text-sm text-slate-600">
                           {user.address ?? "Not provided"}
                         </span>
                       </TableCell>
