@@ -13,6 +13,7 @@ const Sidebar = ({ role }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+
   const handleLogout = () => {
     startTransition(async () => {
       await logOut();
