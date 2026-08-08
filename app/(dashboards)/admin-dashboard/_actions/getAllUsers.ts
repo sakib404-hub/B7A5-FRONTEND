@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export const getAdminSummary = async () => {
+export const getAllUsers = async () => {
   const cookieStore = await cookies();
 
   const accessToken = cookieStore.get("accessToken")?.value;
@@ -15,9 +15,10 @@ export const getAdminSummary = async () => {
     };
   }
 
-  try {
+  try{
+
     const res = await fetch(
-      `${process.env.BACKEND_APP_URL}/api/admin/summary`,
+      `${process.env.BACKEND_APP_URL}/api/admin/users`,
       {
         method: "GET",
         headers: {
@@ -25,29 +26,30 @@ export const getAdminSummary = async () => {
         },
         cache : "force-cache",
         next: {
-          revalidate: 60,
-          tags: ["admin-summary"],
+          revalidate: 60 * 60,
+          tags: ["all-users"],
         },
       }
     );
 
     const result = await res.json();
 
-    if (!res.ok || !result.success) {
-      return {
+    if(!res.ok || !result.success){
+        return {
         success: false,
-        message: result.message || "Failed to fetch admin summary",
+        message: result.message || "Failed to all users",
         data: null,
       };
     }
 
-    return result;
-  } catch (error) {
-    console.error("Admin summary error:", error);
+    return result.data;
+
+  }catch(error){
+    console.log("Get All Users Error : ", error);
 
     return {
       success: false,
-      message: "Something went wrong while fetching admin summary",
+      message: "Something went wrong while fetching all the users",
       data: null,
     };
   }

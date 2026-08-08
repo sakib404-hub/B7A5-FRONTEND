@@ -1,21 +1,20 @@
-import { AuthNavbar } from "@/components/shared/authHeader";
 import Sidebar from "./_components/sideBar";
 import { getMyProfile } from "@/services/getMyProfile";
 
-const DashboardLayout = async({
+const DashboardLayout = async ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
   const user = await getMyProfile();
+
   return (
-    <div className="h-screen bg-background text-foreground">
-     <Sidebar
-        role={user?.role}
-      />
+    <div className="min-h-screen bg-[#eef6f4] text-foreground">
+      <Sidebar role={user?.role} />
+
       {/* Content */}
-      <div className="pl-0 md:pl-24 flex flex-col h-full">
-        <main className="p-4 md:p-6 overflow-y-auto flex-1">
+      <div className="flex h-screen flex-col pl-0 md:pl-24">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {children}
         </main>
       </div>

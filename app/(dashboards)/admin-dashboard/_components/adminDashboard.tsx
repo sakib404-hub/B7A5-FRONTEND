@@ -1,10 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IUser } from "@/types/types";
 import { getAdminSummary } from "../_actions/getAdminSummery";
 import { AdminSummary } from "./AdminSummery";
 
 const AdminDashboard = async({user} : {user : IUser}) => {
  const result = await getAdminSummary();
+
 
   if (!result?.success || !result.data) {
     return (
