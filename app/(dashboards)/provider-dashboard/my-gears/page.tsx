@@ -1,23 +1,20 @@
-import React from 'react'
-import { getProviderGear } from './_actions/getProvidersGear'
+import React from "react";
+import { getProviderGear } from "./_actions/getProvidersGear";
+import { GearHeader } from "./_components/GearHeader";
+import { GearGrid } from "./_components/GearGrid";
 
-const MyGearsPage = async() => {
+const MyGearsPage = async () => {
   const providerGears = await getProviderGear();
-  console.log(providerGears);
+
   return (
-    <div>
-      <div>
-        title and subtitle here
-      </div>
-      //? ekta option rakhbo create gears
-      <div>
+    <div className="space-y-8 p-6">
+      <GearHeader />
 
-      </div>
-
-      //? je gear gual ache aegula show korbo
-      
+      <GearGrid
+        gears={providerGears?.data ?? []}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default MyGearsPage
+export default MyGearsPage;
