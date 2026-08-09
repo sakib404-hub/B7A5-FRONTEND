@@ -11,7 +11,9 @@ import {
   Package,
   Store,
 } from "lucide-react";
-import {  Order } from "./MyOrders";
+import { Order } from "./MyOrders";
+import { Button } from "@/components/ui/button";
+import { handlePayment } from "../_actions/handlePayment";
 
 const formatDate = (date: string) => {
   return new Intl.DateTimeFormat("en-US", {
@@ -22,33 +24,21 @@ const formatDate = (date: string) => {
 };
 
 //? order status
-const OrderStatus = ({
-  status,
-}: {
-  status: Order["status"];
-}) => {
+const OrderStatus = ({ status }: { status: Order["status"] }) => {
   const styles = {
-    PENDING:
-      "border-yellow-200 bg-yellow-50 text-yellow-700",
+    PENDING: "border-yellow-200 bg-yellow-50 text-yellow-700",
 
-    CONFIRMED:
-      "border-blue-200 bg-blue-50 text-blue-700",
+    CONFIRMED: "border-blue-200 bg-blue-50 text-blue-700",
 
-    ONGOING:
-      "border-purple-200 bg-purple-50 text-purple-700",
+    ONGOING: "border-purple-200 bg-purple-50 text-purple-700",
 
-    COMPLETED:
-      "border-green-200 bg-green-50 text-green-700",
+    COMPLETED: "border-green-200 bg-green-50 text-green-700",
 
-    CANCELLED:
-      "border-red-200 bg-red-50 text-red-700",
+    CANCELLED: "border-red-200 bg-red-50 text-red-700",
   };
 
   return (
-    <Badge
-      variant="outline"
-      className={styles[status]}
-    >
+    <Badge variant="outline" className={styles[status]}>
       {status.toLowerCase()}
     </Badge>
   );
@@ -57,29 +47,44 @@ const OrderStatus = ({
 //? payment status
 const PaymentStatus = ({
   isPaid,
+  onPay,
 }: {
   isPaid: boolean;
+  onPay?: () => void;
 }) => {
   return (
-    <Badge
-      variant="outline"
-      className={
-        isPaid
-          ? "border-green-200 bg-green-50 text-green-700"
-          : "border-orange-200 bg-orange-50 text-orange-700"
-      }
-    >
-      {isPaid ? (
-        <>
-          <CheckCircle2 className="mr-1 h-3 w-3" />
-          Paid
-        </>
-      ) : (
-        "Unpaid"
+    <div className="flex items-center gap-2">
+      <Badge
+        variant="outline"
+        className={
+          isPaid
+            ? "border-green-200 bg-green-50 text-green-700"
+            : "border-orange-200 bg-orange-50 text-orange-700"
+        }
+      >
+        {isPaid ? (
+          <>
+            <CheckCircle2 className="mr-1 h-3 w-3" />
+            Paid
+          </>
+        ) : (
+          "Unpaid"
+        )}
+      </Badge>
+
+      {!isPaid && (
+        <Button
+          size="sm"
+          onClick={onPay}
+          className="bg-[#3f7167] hover:bg-[#315c54]"
+        >
+          Pay Now
+        </Button>
       )}
-    </Badge>
+    </div>
   );
 };
+
 
 
 export const OrderCard = ({
@@ -114,7 +119,6 @@ export const OrderCard = ({
             <div>
               <CardTitle className="flex items-center gap-2 text-base text-slate-800">
                 <Package className="h-4 w-4 text-[#3f7167]" />
-
                 Rental Order
               </CardTitle>
 
@@ -124,11 +128,15 @@ export const OrderCard = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <OrderStatus status={order.status} />
 
-              <PaymentStatus
-                isPaid={order.isPaid}
-              />
+              <div className="flex items-center gap-2">
+                <OrderStatus status={order.status} />
+
+                <PaymentStatus
+                  isPaid={order.isPaid}
+                  onPay={() => handlePayment(order.id)}
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
