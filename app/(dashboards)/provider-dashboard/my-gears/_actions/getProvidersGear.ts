@@ -24,11 +24,7 @@ export const getProviderGear = async () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        cache: "force-cache",
-        next: {
-          revalidate: 60 * 60,
-          tags: ["provider-gears"],
-        },
+        cache: "no-store",
       }
     );
 
