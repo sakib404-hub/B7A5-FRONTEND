@@ -3,16 +3,44 @@
 import { motion } from "framer-motion";
 import {
   CalendarDays,
+  CheckCircle2,
+  Clock3,
   CreditCard,
   Package,
-  User,
+  XCircle,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { OrderStatusSelect } from "./OrderStatus";
+import { OrderStatus, OrderStatusSelect } from "./OrderStatus";
+
+interface ProviderOrder {
+  id: string;
+  userId: string;
+  gearId: string;
+  totalAmount: number;
+  status: OrderStatus;
+  rentalDays: number;
+  isPaid: boolean;
+  createdAt: string;
+  updatedAt: string;
+
+  gear: {
+    id: string;
+    title: string;
+    description: string;
+    pricePerDay: number;
+    brand: string;
+    stockQuantity: number;
+    status: "AVAILABLE" | "UNAVAILABLE";
+    providerId: string;
+    categoryId: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
 
 interface ProviderOrderCardProps {
-  order: any;
+  order: ProviderOrder;
   index: number;
 }
 
@@ -22,6 +50,15 @@ const formatDate = (date: string) => {
     month: "short",
     day: "numeric",
   }).format(new Date(date));
+};
+
+const formatStatus = (status: string) => {
+  return status
+    .toLowerCase()
+    .replace("_", " ")
+    .replace(/\b\w/g, (char) =>
+      char.toUpperCase()
+    );
 };
 
 const statusStyles: Record<string, string> = {
@@ -58,9 +95,10 @@ export const ProviderOrderCard = ({
       transition={{
         duration: 0.4,
         delay: index * 0.07,
+        ease: "easeOut",
       }}
       whileHover={{
-        y: -2,
+        y: -3,
       }}
       className="
         overflow-hidden
@@ -77,63 +115,111 @@ export const ProviderOrderCard = ({
       "
     >
       {/* Header */}
-      <div className="flex flex-col gap-3 border-b border-emerald-100 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Package className="h-4 w-4 text-emerald-700" />
+      <div className="border-b border-emerald-100 p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Order info */}
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100">
+              <Package className="h-5 w-5 text-emerald-700" />
+            </div>
 
-            <h3 className="font-semibold text-slate-800">
-              Rental Order
-            </h3>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-semibold text-slate-800">
+                  Rental Order
+                </h3>
+
+                <Badge
+                  variant="outline"
+                  className={
+                    statusStyles[order.status] ??
+                    "border-slate-200 bg-slate-50 text-slate-700"
+                  }
+                >
+                  {formatStatus(order.status)}
+                </Badge>
+              </div>
+
+              <p className="mt-1 text-xs text-muted-foreground">
+                Order #{order.id.slice(0, 8)}
+              </p>
+            </div>
           </div>
 
-          <p className="mt-1 text-xs text-muted-foreground">
-            Order #{order.id.slice(0, 8)}
-          </p>
+          {/* Payment */}
+          <PaymentStatus
+            isPaid={order.isPaid}
+          />
         </div>
-
-        <Badge
-          variant="outline"
-          className={
-            statusStyles[order.status] ??
-            "border-slate-200 bg-slate-50 text-slate-700"
-          }
-        >
-          {order.status.replace("_", " ")}
-        </Badge>
       </div>
 
-      {/* Details */}
-      <div className="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-4">
-        <OrderDetail
-          icon={User}
-          label="Customer"
-          value={order.user?.name ?? "Unknown"}
-          subValue={order.user?.email}
-        />
+      {/* Gear Section */}
+      <div className="p-5">
+        <div className="rounded-xl border border-emerald-100 bg-white/70 p-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
+            {/* Gear icon */}
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-emerald-100">
+              <Package className="h-7 w-7 text-emerald-700" />
+            </div>
 
-        <OrderDetail
-          icon={Package}
-          label="Gear"
-          value={order.gear?.title ?? "Unknown gear"}
-        />
+            {/* Gear information */}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h4 className="font-semibold text-slate-800">
+                    {order.gear.title}
+                  </h4>
 
-        <OrderDetail
-          icon={CalendarDays}
-          label="Rental Duration"
-          value={`${order.rentalDays} days`}
-          subValue={
-            order.createdAt
-              ? formatDate(order.createdAt)
-              : undefined
-          }
-        />
+                  <p className="text-xs text-muted-foreground">
+                    {order.gear.brand}
+                  </p>
+                </div>
 
-        <OrderDetail
-          icon={CreditCard}
-          label="Total Amount"
-          value={`৳${order.totalAmount}`}
-        />
+                <p className="font-semibold text-emerald-700">
+                  ৳{order.gear.pricePerDay}
+                  <span className="ml-1 text-xs font-normal text-muted-foreground">
+                    / day
+                  </span>
+                </p>
+              </div>
+
+              <p className="mt-2 line-clamp-2 text-sm text-slate-500">
+                {order.gear.description}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Order Details */}
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <OrderDetail
+            icon={CalendarDays}
+            label="Rental Duration"
+            value={`${order.rentalDays} ${
+              order.rentalDays === 1
+                ? "day"
+                : "days"
+            }`}
+          />
+
+          <OrderDetail
+            icon={CreditCard}
+            label="Total Amount"
+            value={`৳${order.totalAmount}`}
+          />
+
+          <OrderDetail
+            icon={Clock3}
+            label="Ordered On"
+            value={formatDate(order.createdAt)}
+          />
+
+          <OrderDetail
+            icon={Package}
+            label="Gear Stock"
+            value={`${order.gear.stockQuantity} available`}
+          />
+        </div>
       </div>
 
       {/* Status Update */}
@@ -147,21 +233,58 @@ export const ProviderOrderCard = ({
   );
 };
 
+/* -------------------------------- */
+/* Payment Status                   */
+/* -------------------------------- */
+
+interface PaymentStatusProps {
+  isPaid: boolean;
+}
+
+const PaymentStatus = ({
+  isPaid,
+}: PaymentStatusProps) => {
+  return (
+    <Badge
+      variant="outline"
+      className={
+        isPaid
+          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+          : "border-orange-200 bg-orange-50 text-orange-700"
+      }
+    >
+      {isPaid ? (
+        <>
+          <CheckCircle2 className="mr-1 h-3 w-3" />
+          Paid
+        </>
+      ) : (
+        <>
+          <XCircle className="mr-1 h-3 w-3" />
+          Unpaid
+        </>
+      )}
+    </Badge>
+  );
+};
+
+/* -------------------------------- */
+/* Order Detail                     */
+/* -------------------------------- */
+
 interface OrderDetailProps {
   icon: React.ElementType;
   label: string;
   value: string;
-  subValue?: string;
 }
 
 const OrderDetail = ({
   icon: Icon,
   label,
   value,
-  subValue,
 }: OrderDetailProps) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex items-center gap-3">
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100">
         <Icon className="h-4 w-4 text-emerald-700" />
       </div>
@@ -174,12 +297,6 @@ const OrderDetail = ({
         <p className="truncate text-sm font-medium text-slate-800">
           {value}
         </p>
-
-        {subValue && (
-          <p className="truncate text-xs text-muted-foreground">
-            {subValue}
-          </p>
-        )}
       </div>
     </div>
   );
