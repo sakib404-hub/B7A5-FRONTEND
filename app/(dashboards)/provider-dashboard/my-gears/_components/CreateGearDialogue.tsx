@@ -1,40 +1,48 @@
 "use client";
 
 import { Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export const CreateGearDialog = () => {
+import { CategoryDiaLogueProps } from "./GearHeader";
+import { CreateGearForm } from "./GearForm";
+
+export const CreateGearDialog = ({
+  categories,
+}: CategoryDiaLogueProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
           <Plus className="h-4 w-4" />
           Add Gear
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Add New Gear</DialogTitle>
+          <DialogTitle>
+            Add New Gear
+          </DialogTitle>
 
           <DialogDescription>
-            Add your gear information and make it available
-            for customers to rent.
+            Add your gear information and make it
+            available for customers to rent.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Add Gear form later */}
-        <div className="py-8 text-center text-sm text-muted-foreground">
-          Gear creation form will be added here.
-        </div>
+        <CreateGearForm
+          categories={categories}
+        />
       </DialogContent>
     </Dialog>
   );

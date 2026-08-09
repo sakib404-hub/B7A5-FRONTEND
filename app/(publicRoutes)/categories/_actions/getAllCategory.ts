@@ -13,5 +13,5 @@ export const getAllCategory = async()=>{
 
     const result = await res.json();
 
-    return result.data;
+    return result;
 }

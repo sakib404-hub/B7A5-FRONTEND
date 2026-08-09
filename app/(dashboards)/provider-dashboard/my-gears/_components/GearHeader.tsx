@@ -3,7 +3,18 @@
 import { motion } from "framer-motion";
 import { CreateGearDialog } from "./CreateGearDialogue";
 
-export const GearHeader = () => {
+export interface Category {
+  id : string;
+  name : string;
+  description : string;
+  createdAt : string
+}
+
+export interface CategoryDiaLogueProps {
+  categories : Category[]
+}
+
+export const GearHeader = ({categories} : CategoryDiaLogueProps) => {
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -23,7 +34,7 @@ export const GearHeader = () => {
         </motion.div>
       </div>
 
-      <CreateGearDialog />
+      <CreateGearDialog categories={categories}/>
     </div>
   );
 };
