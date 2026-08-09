@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -19,8 +20,13 @@ import { CreateGearForm } from "./GearForm";
 export const CreateGearDialog = ({
   categories,
 }: CategoryDiaLogueProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>
         <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
           <Plus className="h-4 w-4" />
@@ -42,6 +48,7 @@ export const CreateGearDialog = ({
 
         <CreateGearForm
           categories={categories}
+          onSuccess={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>

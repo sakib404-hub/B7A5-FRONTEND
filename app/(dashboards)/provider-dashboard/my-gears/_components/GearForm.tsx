@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,12 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export interface Category {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: string;
-}
+import { createGear } from "../_actions/createGear";
 
 export interface CreateGearFormData {
   title: string;
@@ -33,14 +30,25 @@ export interface CreateGearFormData {
   categoryId: string;
 }
 
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+}
+
 interface CreateGearFormProps {
   categories: Category[];
+  onSuccess: () => void;
 }
 
 export const CreateGearForm = ({
   categories,
+  onSuccess,
 }: CreateGearFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
+
+  const router = useRouter();
 
   const {
     register,
@@ -68,18 +76,46 @@ export const CreateGearForm = ({
       const payload = {
         ...data,
 
-        // Status is determined from stock quantity
+        // Status is automatically determined
+        // from stock quantity
         status:
           data.stockQuantity > 0
             ? "AVAILABLE"
             : "UNAVAILABLE",
       };
 
+      const result = await createGear(payload);
+
+      if (!result.success) {
+        toast.error(
+          result.message ||
+            "Failed to create gear."
+        );
+
+        return;
+      }
+
+      toast.success(
+        result.message ||
+          "Gear created successfully!"
+      );
+
+      // Reset form
       reset();
+
+      // Refresh Server Components
+      router.refresh();
+
+      // Close parent dialog
+      onSuccess();
     } catch (error) {
       console.error(
         "Create gear error:",
         error
+      );
+
+      toast.error(
+        "Something went wrong while creating the gear."
       );
     } finally {
       setIsCreating(false);
@@ -100,13 +136,16 @@ export const CreateGearForm = ({
         <Input
           id="title"
           placeholder="e.g. Insect Protection Kit"
+          disabled={isCreating}
           {...register("title", {
             required: "Title is required",
+
             minLength: {
               value: 3,
               message:
                 "Title must be at least 3 characters",
             },
+
             maxLength: {
               value: 100,
               message:
@@ -132,15 +171,18 @@ export const CreateGearForm = ({
           id="description"
           placeholder="Describe your gear..."
           rows={4}
+          disabled={isCreating}
           className="resize-none"
           {...register("description", {
             required:
               "Description is required",
+
             minLength: {
               value: 10,
               message:
                 "Description must be at least 10 characters",
             },
+
             maxLength: {
               value: 500,
               message:
@@ -175,11 +217,14 @@ export const CreateGearForm = ({
               min={1}
               step="0.01"
               placeholder="7"
+              disabled={isCreating}
               className="pl-8"
               {...register("pricePerDay", {
                 required:
                   "Price is required",
+
                 valueAsNumber: true,
+
                 min: {
                   value: 1,
                   message:
@@ -205,18 +250,22 @@ export const CreateGearForm = ({
           <Input
             id="brand"
             placeholder="e.g. Sawyer"
+            disabled={isCreating}
             {...register("brand", {
-              required: "Brand is required",
+              required:
+                "Brand is required",
+
               minLength: {
                 value: 2,
                 message:
                   "Brand must be at least 2 characters",
               },
-                maxLength: {
-                  value: 50,
-                  message:
-                    "Brand cannot exceed 50 characters",
-                },
+
+              maxLength: {
+                value: 50,
+                message:
+                  "Brand cannot exceed 50 characters",
+              },
             })}
           />
 
@@ -241,26 +290,39 @@ export const CreateGearForm = ({
             type="number"
             min={0}
             placeholder="30"
-            {...register("stockQuantity", {
-              required:
-                "Stock quantity is required",
-              valueAsNumber: true,
-              min: {
-                value: 0,
-                message:
-                  "Stock cannot be negative",
-              },
-            })}
+            disabled={isCreating}
+            {...register(
+              "stockQuantity",
+              {
+                required:
+                  "Stock quantity is required",
+
+                valueAsNumber: true,
+
+                min: {
+                  value: 0,
+                  message:
+                    "Stock cannot be negative",
+                },
+
+                validate: (value) =>
+                  Number.isInteger(value) ||
+                  "Stock quantity must be a whole number",
+              }
+            )}
           />
 
           {errors.stockQuantity && (
             <p className="text-sm text-destructive">
-              {errors.stockQuantity.message}
+              {
+                errors.stockQuantity
+                  .message
+              }
             </p>
           )}
 
           <p className="text-xs text-muted-foreground">
-            Stock above 0 will make the gear
+            Stock above 0 makes the gear
             available.
           </p>
         </div>
@@ -281,7 +343,10 @@ export const CreateGearForm = ({
             render={({ field }) => (
               <Select
                 value={field.value}
-                onValueChange={field.onChange}
+                onValueChange={
+                  field.onChange
+                }
+                disabled={isCreating}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
@@ -305,7 +370,10 @@ export const CreateGearForm = ({
 
           {errors.categoryId && (
             <p className="text-sm text-destructive">
-              {errors.categoryId.message}
+              {
+                errors.categoryId
+                  .message
+              }
             </p>
           )}
         </div>
@@ -314,8 +382,8 @@ export const CreateGearForm = ({
       {/* Status Information */}
       <div className="rounded-lg border border-emerald-100 bg-emerald-50/60 p-3">
         <p className="text-xs text-muted-foreground">
-          Gear status is automatically determined
-          by stock quantity.
+          Gear status is automatically
+          determined by stock quantity.
         </p>
 
         <p className="mt-1 text-sm font-medium text-emerald-700">
@@ -328,11 +396,11 @@ export const CreateGearForm = ({
       </div>
 
       {/* Submit */}
-      <div className="flex justify-end gap-2 border-t pt-5">
+      <div className="flex justify-end border-t pt-5">
         <Button
           type="submit"
           disabled={isCreating}
-          className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+          className="min-w-32 gap-2 bg-emerald-600 hover:bg-emerald-700"
         >
           {isCreating ? (
             <>
