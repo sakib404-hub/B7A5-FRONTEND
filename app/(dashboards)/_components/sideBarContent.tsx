@@ -6,8 +6,6 @@ import {
   LayoutDashboard,
   LogOut,
   Package,
-  PackagePlus,
-  Settings,
   ShoppingBag,
   Users,
   BarChart3,
@@ -26,11 +24,6 @@ const sidebarItems: Record<UserRole, SidebarItemConfig[]> = {
       label: "Dashboard",
       href: "/provider-dashboard",
       icon: <LayoutDashboard size={18} />,
-    },
-    {
-      label: "Add Gear",
-      href: "/provider-dashboard/add-gear",
-      icon: <PackagePlus size={18} />,
     },
     {
       label: "My Gears",

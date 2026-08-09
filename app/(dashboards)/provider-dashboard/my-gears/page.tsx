@@ -1,9 +1,21 @@
 import React from 'react'
+import { getProviderGear } from './_actions/getProvidersGear'
 
-const MyGearsPage = () => {
+const MyGearsPage = async() => {
+  const providerGears = await getProviderGear();
+  console.log(providerGears);
   return (
     <div>
-      This is the my gear page!
+      <div>
+        title and subtitle here
+      </div>
+      //? ekta option rakhbo create gears
+      <div>
+
+      </div>
+
+      //? je gear gual ache aegula show korbo
+      
     </div>
   )
 }

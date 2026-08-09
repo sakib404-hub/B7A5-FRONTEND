@@ -17,6 +17,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Gear } from "./gearDetails";
+import { createOrders } from "../_action/createOrder";
+import { toast } from "sonner";
+import { redirect, useRouter } from "next/navigation";
 
 interface GearBookingCardProps {
   gear: Gear;
@@ -46,6 +49,8 @@ export const GearBookingCard = ({
     mode: "onChange",
   });
 
+  const router = useRouter();
+
   const startDate = watch("startDate");
   const endDate = watch("endDate");
   const quantity = watch("quantity");
@@ -67,21 +72,7 @@ export const GearBookingCard = ({
   const total =
     rentalDays * gear.pricePerDay * quantity;
 
-  const increaseQuantity = () => {
-    if (quantity < gear.stockQuantity) {
-      setValue("quantity", quantity + 1, {
-        shouldValidate: true,
-      });
-    }
-  };
 
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setValue("quantity", quantity - 1, {
-        shouldValidate: true,
-      });
-    }
-  };
 
   const today = new Date()
     .toISOString()
@@ -89,25 +80,22 @@ export const GearBookingCard = ({
 
   const onSubmit: SubmitHandler<RentalFormData> = async (
     data
-  ) => {
-    console.log({
-      gearId: gear.id,
-      startDate: data.startDate,
-      endDate: data.endDate,
-      rentalDays,
-      quantity: data.quantity,
-      total,
-    });
+) => {
+    const payLoad = {
+      gearId : gear.id,
+      rentalDays : rentalDays 
+    }
 
-    // Server action will be called here
-    //
-    // await createRentalOrder({
-    //   gearId: gear.id,
-    //   startDate: data.startDate,
-    //   endDate: data.endDate,
-    //   rentalDays,
-    //   quantity: data.quantity,
-    // });
+    const response = await createOrders(payLoad);
+
+    if(!response.success){
+      toast.success(response.message);
+      return;
+    }
+
+    toast.success(response.message);
+    router.push('/customer-dashboard/orders');
+    router.refresh();
   };
 
   return (
@@ -270,47 +258,6 @@ export const GearBookingCard = ({
             )}
           </div>
         )}
-
-        {/* Quantity */}
-        <div className="space-y-2">
-          <p className="text-sm font-medium">
-            Quantity
-          </p>
-
-          <div className="flex w-fit items-center rounded-lg border">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={decreaseQuantity}
-              disabled={quantity <= 1}
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-
-            <span className="w-10 text-center font-medium">
-              {quantity}
-            </span>
-
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={increaseQuantity}
-              disabled={
-                quantity >= gear.stockQuantity
-              }
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {quantity >= gear.stockQuantity && (
-            <p className="text-xs text-muted-foreground">
-              Maximum available quantity reached.
-            </p>
-          )}
-        </div>
 
         {/* Price Summary */}
         {rentalDays > 0 && rentalDays < 14 && (
