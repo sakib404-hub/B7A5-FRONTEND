@@ -3,7 +3,8 @@ import { getAllCategory } from "./_actions/getAllCategory";
 import CategoryCard from "./_components/categoryCard";
 
 const CategoriesPage = async () => {
-  const categories = await getAllCategory();
+  const categoriesWithResponse = await getAllCategory();
+  const categories = categoriesWithResponse.data;
   
   return (
     <main className="min-h-screen bg-background">

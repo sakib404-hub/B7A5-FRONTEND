@@ -130,13 +130,6 @@ const FeaturedGearSection = () => {
                       / day
                     </span>
                   </div>
-
-                  <Link
-                    href={`/browse-gear/${gear.id}`}
-                    className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
-                  >
-                    View
-                  </Link>
                 </div>
               </div>
             </motion.div>

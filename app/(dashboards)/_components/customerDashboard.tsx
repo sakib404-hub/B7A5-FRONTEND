@@ -1,34 +1,41 @@
-"use client";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IUser } from "@/types/types";
-import { motion } from "framer-motion";
+import { getSummary } from "../customer-dashboard/_actions/getSummary";
+import CustomerSummaryCards from "../customer-dashboard/_components/SummaryCard";
+import OrderOverview from "../customer-dashboard/_components/OrderOverView";
+import SpendingCard from "../customer-dashboard/_components/SpendingCard";
+import RecentActivity from "../customer-dashboard/_components/ActivityCard";
 
-const CustomerDashboard = ({ user }: {user : IUser}) => {
+const CustomerDashboard = async ({ user }: { user: IUser }) => {
+  const userSummary = await getSummary();
+
+  const summary = userSummary.data;
+
   return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-6">
-        Welcome, {user.name}
-      </h1>
+    <div className="min-h-screen bg-[#edf6f4] p-4 md:p-6 lg:p-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-800 md:text-3xl">
+            Welcome, {user.name} 👋
+          </h1>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {["My Rentals", "Browse Gear", "Reviews"].map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle>{item}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                Manage your {item.toLowerCase()}
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+          <p className="mt-1 text-sm text-slate-500">
+            Here’s an overview of your gear rental activity.
+          </p>
+        </div>
+
+        {/* Summary Cards */}
+        <CustomerSummaryCards summary={summary} />
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <OrderOverview orders={summary.orders} />
+
+          <SpendingCard totalSpent={summary.payments.totalSpent} />
+        </div>
+
+        {/* Recent Activity */}
+        <RecentActivity orders={summary.orders} />
       </div>
     </div>
   );
