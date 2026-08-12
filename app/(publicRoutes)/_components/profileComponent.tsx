@@ -19,7 +19,7 @@ interface UserProfile {
   name: string;
   email: string;
   role: "CUSTOMER" | "PROVIDER" | "ADMIN";
-  status: "ACTIVE" | "BLOCKED" | "PENDING";
+  status: "ACTIVE" | "BLOCKED" ;
   phone: string | null;
   address: string | null;
   createdAt: string;

@@ -16,11 +16,6 @@ export const getMyProfile = async()=>{
         headers : {
             Authorization : `${accessToken}`,
             Cookie : `accessToken=${accessToken}`
-        },
-        cache : 'force-cache',
-        next : {
-            revalidate : 60 * 60 * 24,
-            tags : ["my-profile"]
         }
     });
 

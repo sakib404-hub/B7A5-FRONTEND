@@ -18,6 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Spinner } from "@/components/ui/spinner";
+import { editProfile } from "../profile/_actions/editProfile";
+import { useRouter } from "next/navigation";
 
 interface UserProfile {
   id: string;
@@ -38,6 +41,7 @@ export const EditProfileDialog = ({
   user,
   children,
 }: EditProfileDialogProps) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -67,15 +71,14 @@ export const EditProfileDialog = ({
     try {
       setLoading(true);
 
-      // Replace this with your update profile server action/API.
-      console.log(formData);
+      const result = await editProfile(formData);
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1000)
-      );
+      if(!result.success){
+        toast.error(result.message)
+      }
 
-      toast.success("Profile updated successfully");
-
+      toast.success(result.message);
+      router.refresh();
       setOpen(false);
     } catch {
       toast.error("Failed to update profile");
@@ -132,6 +135,7 @@ export const EditProfileDialog = ({
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              readOnly
               required
             />
           </div>
@@ -185,7 +189,7 @@ export const EditProfileDialog = ({
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                 <Spinner></Spinner>
                   Saving...
                 </>
               ) : (
