@@ -1,8 +1,11 @@
-"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { IUser } from "@/types/types";
+import { providerSummary } from "../provider-dashboard/_actions/getProviderSummary";
 
-const ProviderDashboard = ({ user }: any) => {
+const ProviderDashboard = async({ user }: IUser) => {
+  const summary = await providerSummary();
+  console.log(summary.data);
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-6">
