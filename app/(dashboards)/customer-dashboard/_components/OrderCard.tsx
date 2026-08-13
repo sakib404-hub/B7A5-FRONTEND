@@ -14,6 +14,7 @@ import {
 import { Order } from "./MyOrders";
 import { Button } from "@/components/ui/button";
 import { handlePayment } from "../_actions/handlePayment";
+import { PaymentStatus } from "./PaymentStatus";
 
 const formatDate = (date: string) => {
   return new Intl.DateTimeFormat("en-US", {
@@ -41,47 +42,6 @@ const OrderStatus = ({ status }: { status: Order["status"] }) => {
     <Badge variant="outline" className={styles[status]}>
       {status.toLowerCase()}
     </Badge>
-  );
-};
-
-//? payment status
-const PaymentStatus = ({
-  isPaid,
-  onPay,
-}: {
-  isPaid: boolean;
-  onPay?: () => void;
-}) => {
-  return (
-    <div className="flex items-center gap-2">
-      <Badge
-        variant="outline"
-        className={
-          isPaid
-            ? "border-green-200 bg-green-50 text-green-700"
-            : "border-orange-200 bg-orange-50 text-orange-700"
-        }
-      >
-        {isPaid ? (
-          <>
-            <CheckCircle2 className="mr-1 h-3 w-3" />
-            Paid
-          </>
-        ) : (
-          "Unpaid"
-        )}
-      </Badge>
-
-      {!isPaid && (
-        <Button
-          size="sm"
-          onClick={onPay}
-          className="bg-[#3f7167] hover:bg-[#315c54]"
-        >
-          Pay Now
-        </Button>
-      )}
-    </div>
   );
 };
 
@@ -134,7 +94,7 @@ export const OrderCard = ({
 
                 <PaymentStatus
                   isPaid={order.isPaid}
-                  onPay={() => handlePayment(order.id)}
+                  orderId={order.id}
                 />
               </div>
             </div>

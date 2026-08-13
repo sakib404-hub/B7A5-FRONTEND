@@ -1,4 +1,3 @@
-import React from "react";
 import { getProviderOrders } from "./_action/getProviderOrders";
 import { OrdersHeader } from "./_components/OrdersHeader";
 import { ProviderOrdersList } from "./_components/ProviderOrderList";

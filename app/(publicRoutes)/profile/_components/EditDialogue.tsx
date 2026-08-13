@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
-import { editProfile } from "../profile/_actions/editProfile";
+import { editProfile } from "../_actions/editProfile";
 import { useRouter } from "next/navigation";
 
 interface UserProfile {

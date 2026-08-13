@@ -11,9 +11,12 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { OrderStatus, OrderStatusSelect } from "./OrderStatus";
+import {
+  OrderStatus,
+  OrderStatusSelect,
+} from "./OrderStatus";
 
-interface ProviderOrder {
+export interface ProviderOrder {
   id: string;
   userId: string;
   gearId: string;
@@ -56,9 +59,7 @@ const formatStatus = (status: string) => {
   return status
     .toLowerCase()
     .replace("_", " ")
-    .replace(/\b\w/g, (char) =>
-      char.toUpperCase()
-    );
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 const statusStyles: Record<string, string> = {
@@ -105,7 +106,7 @@ export const ProviderOrderCard = ({
         rounded-2xl
         border
         border-emerald-100
-        bg-linear-to-br
+        bg-gradient-to-br
         from-emerald-50/70
         via-white
         to-teal-50/40
@@ -147,9 +148,7 @@ export const ProviderOrderCard = ({
           </div>
 
           {/* Payment */}
-          <PaymentStatus
-            isPaid={order.isPaid}
-          />
+          <PaymentStatus isPaid={order.isPaid} />
         </div>
       </div>
 
@@ -196,9 +195,7 @@ export const ProviderOrderCard = ({
             icon={CalendarDays}
             label="Rental Duration"
             value={`${order.rentalDays} ${
-              order.rentalDays === 1
-                ? "day"
-                : "days"
+              order.rentalDays === 1 ? "day" : "days"
             }`}
           />
 
@@ -227,6 +224,7 @@ export const ProviderOrderCard = ({
         <OrderStatusSelect
           orderId={order.id}
           currentStatus={order.status}
+          isPaid={order.isPaid}
         />
       </div>
     </motion.div>
@@ -234,7 +232,7 @@ export const ProviderOrderCard = ({
 };
 
 /* -------------------------------- */
-/* Payment Status                   */
+/* Payment Status                    */
 /* -------------------------------- */
 
 interface PaymentStatusProps {
