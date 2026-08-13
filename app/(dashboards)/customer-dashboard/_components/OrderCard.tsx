@@ -95,6 +95,7 @@ export const OrderCard = ({
                 <PaymentStatus
                   isPaid={order.isPaid}
                   orderId={order.id}
+                  orderStatus={order.status}
                 />
               </div>
             </div>

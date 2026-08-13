@@ -106,7 +106,7 @@ export const ProviderOrderCard = ({
         rounded-2xl
         border
         border-emerald-100
-        bg-gradient-to-br
+        bg-linear-to-br
         from-emerald-50/70
         via-white
         to-teal-50/40
