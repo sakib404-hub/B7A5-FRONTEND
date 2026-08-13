@@ -59,6 +59,11 @@ const sidebarItems: Record<UserRole, SidebarItemConfig[]> = {
       href: "/customer-dashboard/orders",
       icon: <ShoppingBag size={18} />,
     },
+     {
+      label: "Orders Completed",
+      href: "/customer-dashboard/completed",
+      icon: <CheckCircle2 size={18} />
+    }
   ],
 
   ADMIN: [
