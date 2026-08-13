@@ -22,11 +22,7 @@ export const getProviderOrders = async () => {
             Authorization : `Bearer ${accessToken}`,
             'Content-Type' : 'application/json'
         },
-        cache :'force-cache',
-        next : {
-            revalidate : 60 * 60,
-            tags : ['provider-orders']
-        }
+        cache :'no-store',
     })
 
     const result = await res.json();

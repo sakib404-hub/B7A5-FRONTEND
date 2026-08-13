@@ -14,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateStatus } from "../_action/updateOrderStatus";
+import { Spinner } from "@/components/ui/spinner";
 
 export enum OrderStatus {
   PENDING = "PENDING",
@@ -72,10 +74,7 @@ export const OrderStatusSelect = ({
 
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Keep local status synchronized
-   * with refreshed server data.
-   */
+
   useEffect(() => {
     setStatus(currentStatus);
   }, [currentStatus]);
@@ -148,28 +147,14 @@ export const OrderStatusSelect = ({
     try {
       setLoading(true);
 
-      /*
-       * Connect your actual server action here:
-       *
-       * const result = await updateOrderStatus({
-       *   orderId,
-       *   status,
-       * });
-       *
-       * if (!result.success) {
-       *   toast.error(result.message);
-       *   return;
-       * }
-       */
+      const result = await updateStatus(orderId as string, status);
 
-      console.log({
-        orderId,
-        status,
-      });
+      if(!result.success){
+        toast.error(result.message);
+        return;
+      }
 
-      toast.success(
-        `Order status changed to ${statusLabels[status]}`
-      );
+      toast.success(result.message);
 
       router.refresh();
     } catch (error) {
@@ -272,11 +257,12 @@ export const OrderStatusSelect = ({
             }
             className="bg-emerald-600 hover:bg-emerald-700"
           >
-            {loading && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
-
-            Update
+            {loading ? 
+              <span className="flex items-center justify-center">
+                <Spinner></Spinner>
+                Updating...
+              </span> : "Update"
+            }
           </Button>
         </div>
       </div>

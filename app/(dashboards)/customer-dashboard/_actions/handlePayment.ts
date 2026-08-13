@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -30,7 +31,6 @@ export const handlePayment = async (orderId: string) => {
     );
 
     const result = await response.json();
-     console.log(result);
 
     if (!response.ok || !result.success) {
       return {

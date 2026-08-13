@@ -23,11 +23,7 @@ export const getRentalOrders = async()=>{
             headers: {
               Authorization : `Bearer ${accessToken}`,
             },
-            cache : "force-cache",
-            next: {
-              revalidate: 60 * 60,
-              tags: ["user-rental-orders"],
-            },
+            cache : "no-store",
           }
         );
     

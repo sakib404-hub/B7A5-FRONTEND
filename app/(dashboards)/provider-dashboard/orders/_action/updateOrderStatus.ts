@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { OrderStatus } from "../_components/OrderStatus";
+import { revalidateTag } from "next/cache";
 
 export const updateStatus = async (
   orderId: string,
@@ -20,7 +21,7 @@ export const updateStatus = async (
 
   try {
     const res = await fetch(
-      `${process.env.BACKEND_APP_URL}/api/orders/${orderId}`,
+      `${process.env.BACKEND_APP_URL}/api/provider/orders/${orderId}`,
       {
         method: "PATCH",
         headers: {
