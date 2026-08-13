@@ -124,3 +124,10 @@ export interface SidebarItemConfig {
   icon: React.ReactNode;
 }
 
+export interface SidebarContentProps {
+  role: UserRole;
+  handleLogout: () => void;
+  isPending: boolean;
+  closeMobile: () => void;
+}
+

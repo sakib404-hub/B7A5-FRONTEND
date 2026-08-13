@@ -9,6 +9,7 @@ import {
   ShoppingBag,
   Users,
   BarChart3,
+  CheckCircle2,
 } from "lucide-react";
 
 import { SidebarItemConfig, UserRole } from "@/types/types";
@@ -35,6 +36,11 @@ const sidebarItems: Record<UserRole, SidebarItemConfig[]> = {
       href: "/provider-dashboard/orders",
       icon: <ShoppingBag size={18} />,
     },
+    {
+      label: "Orders Completed",
+      href: "/provider-dashboard/completed",
+      icon: <CheckCircle2 size={18} />
+    }
   ],
 
   CUSTOMER: [
@@ -114,7 +120,7 @@ export const SidebarContent = ({
            * Exact match for dashboard/home.
            * Nested routes can use startsWith().
            */
-          const isActive = pathname === item.href; 
+          const isActive = pathname === item.href;
 
           return (
             <button
@@ -163,10 +169,7 @@ export const SidebarContent = ({
             disabled:opacity-50
           "
         >
-          <LogOut
-            size={18}
-            className={isPending ? "animate-pulse" : ""}
-          />
+          <LogOut size={18} className={isPending ? "animate-pulse" : ""} />
 
           <span
             className="
