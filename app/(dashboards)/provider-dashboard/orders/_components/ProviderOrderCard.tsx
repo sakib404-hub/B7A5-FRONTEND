@@ -175,7 +175,7 @@ export const ProviderOrderCard = ({
                 </div>
 
                 <p className="font-semibold text-emerald-700">
-                  ৳{order.gear.pricePerDay}
+                  ${order.gear.pricePerDay}
                   <span className="ml-1 text-xs font-normal text-muted-foreground">
                     / day
                   </span>
@@ -202,7 +202,7 @@ export const ProviderOrderCard = ({
           <OrderDetail
             icon={CreditCard}
             label="Total Amount"
-            value={`৳${order.totalAmount}`}
+            value={`${order.totalAmount}`}
           />
 
           <OrderDetail

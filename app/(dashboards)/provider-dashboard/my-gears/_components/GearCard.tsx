@@ -129,7 +129,7 @@ export const GearCard = ({
         <div className="flex items-end justify-between">
           <div>
             <p className="text-xl font-bold text-emerald-700">
-              ৳{gear.pricePerDay}
+              ${gear.pricePerDay}
               <span className="ml-1 text-xs font-normal text-slate-500">
                 / day
               </span>

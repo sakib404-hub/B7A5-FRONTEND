@@ -108,7 +108,7 @@ export const OrderCard = ({
             <OrderInfo
               icon={CreditCard}
               label="Total Amount"
-              value={`৳${order.totalAmount}`}
+              value={`$${order.totalAmount}`}
             />
 
             {/* Rental Days */}

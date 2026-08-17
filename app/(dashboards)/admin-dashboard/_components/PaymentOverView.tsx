@@ -81,7 +81,7 @@ export const PaymentOverview = ({ payments }: Props) => {
               transition={{ duration: 0.4 }}
               className="mt-1 text-3xl font-bold tracking-tight text-foreground"
             >
-              ৳{payments.totalRevenue.toLocaleString()}
+              ${payments.totalRevenue.toLocaleString()}
             </motion.p>
 
             <div className="mt-1 flex items-center gap-1 text-xs text-primary">

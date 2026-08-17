@@ -81,17 +81,7 @@ const sidebarItems: Record<UserRole, SidebarItemConfig[]> = {
       label: "Manage Users",
       href: "/admin-dashboard/users",
       icon: <Users size={18} />,
-    },
-    {
-      label: "Manage Gear",
-      href: "/admin-dashboard/gear",
-      icon: <Package size={18} />,
-    },
-    {
-      label: "Reports",
-      href: "/admin-dashboard/reports",
-      icon: <BarChart3 size={18} />,
-    },
+    }
   ],
 };
 

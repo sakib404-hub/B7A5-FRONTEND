@@ -178,7 +178,7 @@ export const AdminSummary = ({ summary }: Props) => {
       >
         <SummaryCard
           title="Total Revenue"
-          value={`৳${summary.payments.totalRevenue}`}
+          value={`$${summary.payments.totalRevenue}`}
           description={`${summary.payments.total} successful payments`}
           icon={CreditCard}
         />

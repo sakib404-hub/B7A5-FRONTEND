@@ -58,7 +58,7 @@ const ProviderSummaryCards = ({
     },
     {
       title: "Total Earnings",
-      value: `৳${summary.earnings.total}`,
+      value: `$${summary.earnings.total}`,
       description: "From rental orders",
       icon: Wallet,
     },

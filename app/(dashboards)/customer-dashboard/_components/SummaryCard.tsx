@@ -53,7 +53,7 @@ const CustomerSummaryCards = ({
     },
     {
       title: "Total Spent",
-      value: `৳${summary.payments.totalSpent}`,
+      value: `$${summary.payments.totalSpent}`,
       icon: Wallet,
       description: "Total rental spending",
     },

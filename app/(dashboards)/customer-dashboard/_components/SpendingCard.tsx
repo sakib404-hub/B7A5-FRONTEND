@@ -54,7 +54,7 @@ const SpendingCard = ({ totalSpent }: SpendingCardProps) => {
             </p>
 
             <h2 className="mt-1 text-3xl font-bold text-[#3f7167]">
-              ৳{totalSpent}
+              ${totalSpent}
             </h2>
           </motion.div>
         </CardContent>
