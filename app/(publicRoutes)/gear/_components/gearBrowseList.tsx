@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -10,6 +10,10 @@ import {
   ArrowUpDown,
   DollarSign,
   PackageSearch,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { Gear } from "@/types/types";
 import GearCard from "./gearCard";
@@ -27,6 +31,8 @@ type SortOption =
   | "NAME_ASC";
 
 export const GearBrowseList = ({ initialGears = [] }: GearBrowseListProps) => {
+  const sectionRef = useRef<HTMLElement>(null);
+
   const [search, setSearch] = useState("");
   const [selectedBrand, setSelectedBrand] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -34,6 +40,15 @@ export const GearBrowseList = ({ initialGears = [] }: GearBrowseListProps) => {
   const [maxPrice, setMaxPrice] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("DEFAULT");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+
+  // Reset to page 1 whenever any search or filter state changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedBrand, statusFilter, minPrice, maxPrice, sortBy, itemsPerPage]);
 
   // Extract all unique brands dynamically
   const uniqueBrands = useMemo(() => {
@@ -123,6 +138,12 @@ export const GearBrowseList = ({ initialGears = [] }: GearBrowseListProps) => {
     sortBy,
   ]);
 
+  // Pagination calculation
+  const totalPages = Math.max(1, Math.ceil(filteredGears.length / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredGears.length);
+  const currentGears = filteredGears.slice(startIndex, endIndex);
+
   // Count active non-default filters
   const activeFiltersCount = useMemo(() => {
     let count = 0;
@@ -141,13 +162,39 @@ export const GearBrowseList = ({ initialGears = [] }: GearBrowseListProps) => {
     setMinPrice("");
     setMaxPrice("");
     setSortBy("DEFAULT");
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    const validPage = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(validPage);
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // Generate visible page numbers for pagination
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 4) {
+        pages.push(1, 2, 3, 4, 5, "...", totalPages);
+      } else if (currentPage >= totalPages - 3) {
+        pages.push(1, "...", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages);
+      }
+    }
+    return pages;
   };
 
   const hasAnyFilterActive =
     search.trim() !== "" || activeFiltersCount > 0;
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
+    <section ref={sectionRef} className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
       {/* Section Header */}
       <div className="mb-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -158,16 +205,14 @@ export const GearBrowseList = ({ initialGears = [] }: GearBrowseListProps) => {
 
           <div className="flex items-center gap-2">
             <div className="rounded-full border bg-muted/50 px-4 py-2 text-sm text-muted-foreground">
-              {hasAnyFilterActive ? (
+              {filteredGears.length > 0 ? (
                 <>
-                  Showing <span className="font-semibold text-foreground">{filteredGears.length}</span> of{" "}
-                  <span className="font-semibold text-foreground">{initialGears.length}</span> items
+                  Showing <span className="font-semibold text-foreground">{startIndex + 1}–{endIndex}</span> of{" "}
+                  <span className="font-semibold text-foreground">{filteredGears.length}</span>{" "}
+                  {hasAnyFilterActive ? "filtered items" : "items"}
                 </>
               ) : (
-                <>
-                  <span className="font-semibold text-foreground">{initialGears.length}</span>{" "}
-                  {initialGears.length === 1 ? "item" : "items"} available
-                </>
+                <>0 items available</>
               )}
             </div>
           </div>
@@ -472,17 +517,125 @@ export const GearBrowseList = ({ initialGears = [] }: GearBrowseListProps) => {
       )}
 
       {/* Gear Grid or Empty State */}
-      {filteredGears.length > 0 ? (
-        <motion.div
-          layout
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        >
-          <AnimatePresence>
-            {filteredGears.map((gear: Gear) => (
-              <GearCard key={gear.id} gear={gear} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+      {currentGears.length > 0 ? (
+        <>
+          <motion.div
+            layout
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 min-h-120"
+          >
+            <AnimatePresence mode="popLayout">
+              {currentGears.map((gear: Gear) => (
+                <GearCard key={gear.id} gear={gear} />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
+              {/* Items per page selector */}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>Items per page:</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                  className="rounded-lg border bg-background px-2.5 py-1 text-xs font-semibold text-foreground outline-none transition focus:border-primary cursor-pointer"
+                >
+                  <option value={4}>4</option>
+                  <option value={8}>8</option>
+                  <option value={12}>12</option>
+                  <option value={16}>16</option>
+                  <option value={24}>24</option>
+                </select>
+                <span>
+                  (Page {currentPage} of {totalPages})
+                </span>
+              </div>
+
+              {/* Page Buttons */}
+              <div className="flex items-center gap-1.5">
+                {/* First Page */}
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(1)}
+                  disabled={currentPage === 1}
+                  aria-label="First page"
+                  className="flex size-9 items-center justify-center rounded-xl border bg-background text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                >
+                  <ChevronsLeft className="size-4" />
+                </button>
+
+                {/* Previous Page */}
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  aria-label="Previous page"
+                  className="flex size-9 items-center justify-center rounded-xl border bg-background text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                >
+                  <ChevronLeft className="size-4" />
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1">
+                  {getPageNumbers().map((page, index) => {
+                    if (page === "...") {
+                      return (
+                        <span
+                          key={`ellipsis-${index}`}
+                          className="flex size-9 items-center justify-center text-xs font-medium text-muted-foreground"
+                        >
+                          ...
+                        </span>
+                      );
+                    }
+
+                    const pageNum = Number(page);
+                    const isCurrent = currentPage === pageNum;
+
+                    return (
+                      <button
+                        key={`page-${pageNum}`}
+                        type="button"
+                        onClick={() => handlePageChange(pageNum)}
+                        aria-current={isCurrent ? "page" : undefined}
+                        className={`flex size-9 items-center justify-center rounded-xl text-xs font-semibold transition cursor-pointer ${
+                          isCurrent
+                            ? "bg-primary text-primary-foreground shadow-xs"
+                            : "border bg-background text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Page */}
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  aria-label="Next page"
+                  className="flex size-9 items-center justify-center rounded-xl border bg-background text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
+
+                {/* Last Page */}
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                  aria-label="Last page"
+                  className="flex size-9 items-center justify-center rounded-xl border bg-background text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                >
+                  <ChevronsRight className="size-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       ) : (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
