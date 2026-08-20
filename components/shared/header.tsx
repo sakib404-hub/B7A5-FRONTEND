@@ -6,6 +6,7 @@ import { Menu, User, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -24,7 +25,7 @@ import {
 import { NavbarProps } from "@/types/types";
 import { logOut } from "@/services/logOut";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -34,7 +35,15 @@ const navItems = [
 ];
 
 export const Navbar = ({ user }: NavbarProps) => {
+  const pathname = usePathname();
   const router = useRouter();
+
+  const isLinkActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(href);
+  };
 
   const handleLogout = async () => {
     await logOut();
@@ -63,16 +72,24 @@ export const Navbar = ({ user }: NavbarProps) => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-1.5 md:flex">
+          {navItems.map((item) => {
+            const isActive = isLinkActive(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-primary/10 text-primary font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Desktop Actions */}
@@ -176,15 +193,24 @@ export const Navbar = ({ user }: NavbarProps) => {
             </SheetHeader>
 
             <div className="mt-8 flex flex-col gap-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-accent"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const isActive = isLinkActive(item.href);
+
+                return (
+                  <SheetClose asChild key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                        isActive
+                          ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                );
+              })}
 
               <div className="my-4 border-t" />
 
