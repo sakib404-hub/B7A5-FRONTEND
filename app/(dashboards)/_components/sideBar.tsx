@@ -1,15 +1,16 @@
 "use client";
 
+import { Menu, X } from "lucide-react";
 import { useState, useTransition } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+
 import { logOut } from "@/services/logOut";
 import { SidebarContent } from "./sideBarContent";
 import { SidebarProps } from "@/types/types";
 import { toast } from "sonner";
 
-export const Sidebar = ({ role, user }: SidebarProps) => {
+const Sidebar = ({ role }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -24,60 +25,47 @@ export const Sidebar = ({ role, user }: SidebarProps) => {
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 lg:w-72 border-r border-border/60 bg-card md:flex flex-col shadow-xs">
-        <SidebarContent
-          role={role}
-          user={user}
-          handleLogout={handleLogout}
-          isPending={isPending}
+      {/* Mobile Toggle */}
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="fixed left-4 top-4 z-50 rounded-lg border bg-card p-2 shadow-md md:hidden cursor-pointer"
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 z-30 bg-black/20 md:hidden"
         />
-      </aside>
+      )}
 
-      {/* Mobile Drawer Overlay */}
+      {/* Sidebar */}
       <AnimatePresence>
-        {isOpen && (
-          <div className="fixed inset-0 z-50 md:hidden">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-xs"
-            />
-
-            {/* Mobile Sheet */}
-            <motion.aside
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-card shadow-2xl border-r border-border"
-            >
-              {/* Close Button Header */}
-              <div className="flex justify-end p-3 pb-0">
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  aria-label="Close sidebar"
-                >
-                  <X className="size-5" />
-                </button>
-              </div>
-
-              <SidebarContent
-                role={role}
-                user={user}
-                handleLogout={handleLogout}
-                isPending={isPending}
-                closeMobile={() => setIsOpen(false)}
-              />
-            </motion.aside>
-          </div>
-        )}
+        <motion.aside
+          initial={{ x: -80, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -80, opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className={`
+            fixed left-4 top-1/2 z-40
+            -translate-y-1/2
+            w-14 h-[65vh]
+            rounded-2xl border bg-card shadow-xl
+            ${isOpen ? "flex" : "hidden"}
+            md:flex flex-col
+          `}
+        >
+          <SidebarContent
+            role={role}
+            handleLogout={handleLogout}
+            isPending={isPending}
+            closeMobile={() => setIsOpen(false)}
+          />
+        </motion.aside>
       </AnimatePresence>
     </>
   );
