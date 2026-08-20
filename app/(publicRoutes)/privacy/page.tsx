@@ -9,7 +9,6 @@ import {
   UserCheck,
   Server,
   Bell,
-  Mail,
 } from "lucide-react";
 import Link from "next/link";
 

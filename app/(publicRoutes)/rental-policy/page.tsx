@@ -3,9 +3,7 @@
 import { motion } from "framer-motion";
 import {
   CalendarCheck,
-  CheckCircle2,
   Clock,
-  AlertCircle,
   Sparkles,
   ShieldCheck,
   RotateCcw,

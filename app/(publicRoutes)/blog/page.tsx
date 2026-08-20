@@ -3,14 +3,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  BookOpen,
   Calendar,
   Clock,
   User,
   ArrowRight,
-  Sparkles,
-  Tag,
-  Share2,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
