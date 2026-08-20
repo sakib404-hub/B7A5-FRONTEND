@@ -31,11 +31,14 @@ export interface Review {
   };
 }
 
+import { IUser } from "@/types/types";
+
 interface GearDetailsProps {
   gear: Gear;
+  user?: IUser | null;
 }
 
-export const GearDetails = ({ gear }: GearDetailsProps) => {
+export const GearDetails = ({ gear, user }: GearDetailsProps) => {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <motion.div
@@ -63,7 +66,7 @@ export const GearDetails = ({ gear }: GearDetailsProps) => {
         </div>
 
         <div>
-          <GearBookingCard gear={gear} />
+          <GearBookingCard gear={gear} user={user} />
         </div>
       </div>
     </div>

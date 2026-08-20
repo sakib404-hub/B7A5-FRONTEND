@@ -4,8 +4,8 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   CalendarDays,
-  Minus,
-  Plus,
+  Lock,
+  LogIn,
   ShoppingCart,
 } from "lucide-react";
 import {
@@ -13,16 +13,19 @@ import {
   Controller,
   SubmitHandler,
 } from "react-hook-form";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Gear } from "./gearDetails";
 import { createOrders } from "../_action/createOrder";
 import { toast } from "sonner";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { IUser } from "@/types/types";
 
 interface GearBookingCardProps {
   gear: Gear;
+  user?: IUser | null;
 }
 
 interface RentalFormData {
@@ -33,12 +36,12 @@ interface RentalFormData {
 
 export const GearBookingCard = ({
   gear,
+  user,
 }: GearBookingCardProps) => {
   const {
     control,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<RentalFormData>({
     defaultValues: {
@@ -61,42 +64,40 @@ export const GearBookingCard = ({
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    const difference =
-      end.getTime() - start.getTime();
+    const difference = end.getTime() - start.getTime();
 
-    return Math.ceil(
-      difference / (1000 * 60 * 60 * 24)
-    );
+    return Math.ceil(difference / (1000 * 60 * 60 * 24));
   }, [startDate, endDate]);
 
-  const total =
-    rentalDays * gear.pricePerDay * quantity;
+  const total = rentalDays * gear.pricePerDay * quantity;
 
+  const today = new Date().toISOString().split("T")[0];
 
-
-  const today = new Date()
-    .toISOString()
-    .split("T")[0];
-
-  const onSubmit: SubmitHandler<RentalFormData> = async (
-    data
-) => {
-    const payLoad = {
-      gearId : gear.id,
-      rentalDays : rentalDays 
-    }
-
-    const response = await createOrders(payLoad);
-
-    if(!response.success){
-      toast.success(response.message);
+  const onSubmit: SubmitHandler<RentalFormData> = async () => {
+    if (!user) {
+      toast.error("You must be logged in to rent equipment.");
+      router.push(`/login?redirect=/gear/${gear.id}`);
       return;
     }
 
-    toast.success(response.message);
-    router.push('/customer-dashboard/orders');
+    const payLoad = {
+      gearId: gear.id,
+      rentalDays: rentalDays,
+    };
+
+    const response = await createOrders(payLoad);
+
+    if (!response.success) {
+      toast.error(response.message || "Failed to create rental order.");
+      return;
+    }
+
+    toast.success(response.message || "Rental order placed successfully!");
+    router.push("/customer-dashboard/orders");
     router.refresh();
   };
+
+  const isAvailable = gear.status === "AVAILABLE" && gear.stockQuantity > 0;
 
   return (
     <motion.div
@@ -108,34 +109,44 @@ export const GearBookingCard = ({
       }}
       className="sticky top-24 rounded-2xl border bg-card p-6 shadow-sm"
     >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5"
-      >
-        {/* Price */}
-        <div className="flex items-end justify-between">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Price & Stock */}
+        <div className="flex items-end justify-between border-b pb-4">
           <div>
-            <span className="text-2xl font-bold">
+            <span className="text-2xl font-bold text-foreground">
               ${gear.pricePerDay}
             </span>
-
-            <span className="text-muted-foreground">
-              {" "}
-              / day
-            </span>
+            <span className="text-muted-foreground text-sm"> / day</span>
           </div>
 
-          <span className="text-sm text-muted-foreground">
-            {gear.stockQuantity} available
+          <span
+            className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+              isAvailable
+                ? "bg-primary/10 text-primary"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {isAvailable ? `${gear.stockQuantity} available` : "Unavailable"}
           </span>
         </div>
 
+        {/* Not Logged In Warning Banner */}
+        {!user && (
+          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-amber-900 dark:text-amber-200">
+            <div className="flex items-center gap-2 text-xs font-bold">
+              <Lock className="size-4 text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>Login Required to Rent</span>
+            </div>
+            <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed">
+              You must be signed in to your GearUp account to select rental dates
+              and reserve this equipment.
+            </p>
+          </div>
+        )}
+
         {/* Start Date */}
         <div className="space-y-2">
-          <label
-            htmlFor="startDate"
-            className="text-sm font-medium"
-          >
+          <label htmlFor="startDate" className="text-sm font-medium">
             Start date
           </label>
 
@@ -143,12 +154,12 @@ export const GearBookingCard = ({
             name="startDate"
             control={control}
             rules={{
-              required: "Start date is required",
+              required: user ? "Start date is required" : false,
               validate: (value) => {
-                if (value < today) {
+                if (!user) return true;
+                if (value && value < today) {
                   return "Start date cannot be in the past";
                 }
-
                 return true;
               },
             }}
@@ -156,13 +167,13 @@ export const GearBookingCard = ({
               <div>
                 <div className="relative">
                   <CalendarDays className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-
                   <Input
                     {...field}
                     id="startDate"
                     type="date"
                     min={today}
-                    className="pl-10"
+                    disabled={!user || !isAvailable}
+                    className="pl-10 disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
 
@@ -178,10 +189,7 @@ export const GearBookingCard = ({
 
         {/* End Date */}
         <div className="space-y-2">
-          <label
-            htmlFor="endDate"
-            className="text-sm font-medium"
-          >
+          <label htmlFor="endDate" className="text-sm font-medium">
             End date
           </label>
 
@@ -189,8 +197,9 @@ export const GearBookingCard = ({
             name="endDate"
             control={control}
             rules={{
-              required: "End date is required",
+              required: user ? "End date is required" : false,
               validate: (value) => {
+                if (!user) return true;
                 if (!startDate) {
                   return "Select start date first";
                 }
@@ -199,8 +208,7 @@ export const GearBookingCard = ({
                 const end = new Date(value);
 
                 const days = Math.ceil(
-                  (end.getTime() - start.getTime()) /
-                    (1000 * 60 * 60 * 24)
+                  (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
                 );
 
                 if (days <= 0) {
@@ -218,13 +226,13 @@ export const GearBookingCard = ({
               <div>
                 <div className="relative">
                   <CalendarDays className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-
                   <Input
                     {...field}
                     id="endDate"
                     type="date"
                     min={startDate || today}
-                    className="pl-10"
+                    disabled={!user || !isAvailable}
+                    className="pl-10 disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
 
@@ -239,16 +247,11 @@ export const GearBookingCard = ({
         </div>
 
         {/* Rental Days Information */}
-        {rentalDays > 0 && (
+        {user && rentalDays > 0 && (
           <div className="rounded-lg bg-muted/50 px-4 py-3">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                Rental duration
-              </span>
-
-              <span className="font-medium">
-                {rentalDays} days
-              </span>
+              <span className="text-muted-foreground">Rental duration</span>
+              <span className="font-medium">{rentalDays} days</span>
             </div>
 
             {rentalDays >= 14 && (
@@ -260,7 +263,7 @@ export const GearBookingCard = ({
         )}
 
         {/* Price Summary */}
-        {rentalDays > 0 && rentalDays < 14 && (
+        {user && rentalDays > 0 && rentalDays < 14 && (
           <motion.div
             initial={{
               opacity: 0,
@@ -276,58 +279,72 @@ export const GearBookingCard = ({
               <span className="text-muted-foreground">
                 ${gear.pricePerDay} × {rentalDays} days
               </span>
-
-              <span>
-                ${(
-                  gear.pricePerDay * rentalDays
-                ).toFixed(2)}
-              </span>
+              <span>${(gear.pricePerDay * rentalDays).toFixed(2)}</span>
             </div>
 
             {quantity > 1 && (
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">
-                  Quantity
-                </span>
-
+                <span className="text-muted-foreground">Quantity</span>
                 <span>× {quantity}</span>
               </div>
             )}
 
             <div className="flex justify-between border-t pt-3 font-semibold">
               <span>Total</span>
-
-              <span className="text-lg text-primary">
-                ${total.toFixed(2)}
-              </span>
+              <span className="text-lg text-primary">${total.toFixed(2)}</span>
             </div>
           </motion.div>
         )}
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          className="h-12 w-full gap-2"
-          size="lg"
-          disabled={
-            gear.status !== "AVAILABLE" ||
-            isSubmitting
-          }
-        >
-          <ShoppingCart className="h-5 w-5" />
-
-          {gear.status !== "AVAILABLE"
-            ? "Currently unavailable"
-            : isSubmitting
+        {/* Action Button: Sign In Required VS Rent This Gear */}
+        {!user ? (
+          <div className="space-y-2 pt-2">
+            <Button
+              type="button"
+              asChild
+              className="h-12 w-full gap-2 shadow-sm font-semibold cursor-pointer"
+              size="lg"
+            >
+              <Link href={`/login`}>
+                <LogIn className="size-4" />
+                Sign In to Rent Equipment
+              </Link>
+            </Button>
+            <p className="text-center text-[11px] text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/register"
+                className="font-semibold text-primary hover:underline"
+              >
+                Create an account
+              </Link>
+            </p>
+          </div>
+        ) : (
+          <Button
+            type="submit"
+            className="h-12 w-full gap-2 font-semibold cursor-pointer"
+            size="lg"
+            disabled={
+              !isAvailable ||
+              isSubmitting ||
+              rentalDays <= 0 ||
+              rentalDays >= 14
+            }
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {!isAvailable
+              ? "Currently Unavailable"
+              : isSubmitting
               ? "Processing..."
               : rentalDays > 0 && rentalDays < 14
-                ? "Rent This Gear"
-                : "Select Rental Dates"}
-        </Button>
+              ? "Rent This Gear"
+              : "Select Rental Dates"}
+          </Button>
+        )}
 
         <p className="text-center text-xs text-muted-foreground">
-          You won't be charged until your rental is
-          confirmed.
+          You won&apos;t be charged until your rental is confirmed.
         </p>
       </form>
     </motion.div>
