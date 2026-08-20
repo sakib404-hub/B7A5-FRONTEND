@@ -1,28 +1,20 @@
-# 🏕️ GEAR-UP — Gear Rental Marketplace
+# 🏕️ GEAR-UP — Outdoor Gear Rental & Sharing Marketplace
 
 ### 🚀 Rent Smart. Explore More. Gear Up!
 
-**GEAR-UP** is a modern **multi-vendor gear rental marketplace** where customers can discover and rent equipment from providers, while providers can manage their gear inventory and rental orders through dedicated dashboards.
+**GEAR-UP** is a modern, full-stack **multi-vendor gear rental and sharing marketplace** where outdoor enthusiasts can discover and rent top-tier camping, hiking, and expedition equipment from trusted providers. Providers can effortlessly list and manage their gear inventory and track incoming rental orders through dedicated role-based dashboards.
 
-Built with **Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, Express.js, and Stripe**, GEAR-UP provides a complete rental experience with role-based dashboards, secure authentication, online payments, and rental order management.
+Built with **Next.js 16 (App Router & Turbopack), React 19, TypeScript, Tailwind CSS v4, Framer Motion, Prisma, PostgreSQL, Express.js, and Stripe**, GEAR-UP provides an end-to-end rental experience with real-time catalog discovery, interactive filtering, client pagination, secure authentication gates, online checkout, and lifecycle order management.
 
 ---
 
-## 🌐 Live Application
+## 🌐 Live Application & Links
 
 <div align="center">
 
-### 🚀 Frontend
-
-**[🔗 Visit GEAR-UP](https://gearup-client-sand.vercel.app)**
-
-### ⚙️ Backend API
-
-**[🔗 Explore Backend API](https://gearup-olive.vercel.app)**
-
-### 💻 Backend Repository
-
-**[🔗 View Backend on GitHub](https://github.com/sakib404-hub/GEAR-UP-B7A4.git)**
+| 🚀 Frontend Application | ⚙️ Backend API Service | 💻 Backend GitHub Repo |
+| :---: | :---: | :---: |
+| [**🔗 Visit GEAR-UP**](https://gearup-client-sand.vercel.app) | [**🔗 Explore Backend API**](https://gearup-olive.vercel.app) | [**🔗 View Backend Repo**](https://github.com/sakib404-hub/GEAR-UP-B7A4.git) |
 
 </div>
 
@@ -30,238 +22,95 @@ Built with **Next.js, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, Expre
 
 ## ✨ Why GEAR-UP?
 
-Finding and renting the right equipment shouldn't be complicated.
+Outdoor adventures shouldn't require thousands of dollars in gear purchases and storage hassles. GEAR-UP bridges the gap between **explorers who need gear** and **providers who own equipment**.
 
-GEAR-UP connects **customers who need equipment** with **providers who own equipment**, creating a simple marketplace for renting gears.
-
-### 🎯 The platform allows:
-
-* 🔍 Discover available gears
-* 📂 Browse gears by category
-* 🛒 Create rental orders
-* 💳 Pay securely with Stripe
-* 📦 Track rental order status
-* 🏪 Providers can list and manage gears
-* 📋 Providers can manage incoming orders
-* 👑 Admins can manage users, gears, and categories
-* 📊 Dashboards provide role-specific insights
+### 🎯 Core Capabilities:
+* 🔍 **Real-Time Gear Discovery**: Instant client-side search across titles, brands, descriptions, and provider names.
+* 🎛️ **Multi-Criteria Filtering & Pagination**: Filter by brand, availability, and daily rate with customizable items-per-page pagination.
+* 🛡️ **Authentication-Gated Rentals**: Unauthenticated visitors can browse freely; active session required to reserve gear.
+* 💳 **Secure Stripe Payments**: Frictionless and safe checkout for rental confirmations.
+* 📦 **Complete Order Lifecycle**: Track rentals from `PENDING` $\to$ `CONFIRMED` $\to$ `PICKED_UP` $\to$ `RETURNED`.
+* 🏪 **Provider Business Suite**: Inventory creation, equipment updates, and order status transitions.
+* 👑 **Admin Governance**: Platform-wide user management, gear moderation, and revenue analytics.
+* 🧭 **Floating Pill Sidebar**: Minimalist floating navigation in dashboards without public footer distractions.
+* 📄 **Rich Animated Public Pages**: Dedicated About Us, Contact, FAQ, Blog, Privacy, Terms, and Rental Policy pages.
 
 ---
 
-# 🚀 Key Features
+# 🚀 Key Platform Features
 
-## 🌍 Modern Landing Experience
+## 1. 🔍 Interactive Gear Catalog & Filtering (`/gear`)
+* **Instant Client Search**: Instant search filtering as you type with single-click reset.
+* **Filter Drawer**: Multi-facet filtering by dynamic brand list, availability toggles, and daily price bounds.
+* **Active Filter Chips**: Removable tags with a "Clear all" button.
+* **Sorting Options**: Sort by *Featured*, *Price: Low to High*, *Price: High to Low*, *Rating*, and *Name: A to Z*.
+* **Client-Side Numbered Pagination**: First/prev/numbered/next/last buttons with 4, 8, 12, 16, or 24 items per page.
 
-A visually engaging landing page designed to introduce the GEAR-UP platform and guide users toward discovering available rental equipment.
+## 2. 🛡️ Authentication Gate for Rentals
+* Equipment reservation is gated: guests see a clear sign-in requirement banner with a direct link to `/login`.
+* Logged-in users enjoy seamless date picking, dynamic day/price calculation, and instant order creation.
 
-* Modern responsive UI
-* Smooth animations
-* Interactive sections
-* Clear call-to-actions
-* Mobile-friendly design
+## 3. 🧭 Compact Floating Pill Sidebar
+* Role-based floating sidebar (`w-14 h-[65vh]`) with hover tooltips and responsive mobile drawer.
+* Clean separation of concerns: public footer is exclusively scoped to public pages.
 
----
+## 4. 🔐 Animated Auth Showcase (`/login` & `/register`)
+* Replaced static auth imagery with an interactive value-proposition showcase.
+* Staggered Framer Motion slide-in animations, trust badges, verified alpine trekker reviews, and ambient glowing backgrounds.
 
-## 🔎 Gear Discovery
+## 5. 📄 7 Interactive Animated Public Pages
+* **`/about`**: Live metrics counters (`10K+ Rentals`, `500+ Gear`), core values, and mission statement.
+* **`/contact`**: Interactive inquiry submission with topic selector and Sonner toast confirmations.
+* **`/faq`**: Real-time search with category pills and animated accordions.
+* **`/blog`**: Featured adventure guide, category filters, and reading time chips.
+* **`/privacy`**: Structured data protection and privacy policy.
+* **`/terms`**: Legal user agreement and equipment inspection clauses.
+* **`/rental-policy`**: Handover checklists, cleaning standards, late return penalties, and cancellation rules.
 
-Customers can easily explore available equipment.
-
-### Features
-
-* Browse all gears
-* Search and discover equipment
-* Browse by category
-* View detailed gear information
-* Check availability
-* View pricing information
-* Access provider information
-
----
-
-## 🛒 Rental Management
-
-Customers can create and manage rental orders directly from the platform.
-
-### Rental Flow
-
-```text
-Browse Gear
-     ↓
-View Gear Details
-     ↓
-Select Rental Information
-     ↓
-Create Order
-     ↓
-Provider Confirmation
-     ↓
-Online Payment
-     ↓
-Gear Pickup
-     ↓
-Gear Return
-     ↓
-Rental Completed
-```
+## 6. 🔔 Enhanced Global Toast Notifications
+* Top-right positioned toasts powered by `Sonner` with rich colors, close buttons, custom icons, and 3.5s duration.
 
 ---
 
-# 💳 Secure Stripe Payments
+# 👥 User Roles & Dashboard Routes
 
-GEAR-UP integrates **Stripe Checkout** for secure online payments.
-
-```text
-Customer
-   │
-   ▼
-Rental Order
-   │
-   ▼
-Provider Confirms
-   │
-   ▼
-Stripe Checkout
-   │
-   ▼
-Payment Completed
-   │
-   ▼
-Stripe Webhook
-   │
-   ▼
-Backend Verification
-   │
-   ▼
-Payment Confirmed
-```
-
-This provides a secure payment workflow without exposing sensitive payment information to the application.
-
----
-
-# 👥 User Roles
-
-GEAR-UP uses a role-based architecture with three main user types.
-
-| Role            | Dashboard             | Purpose                             |
-| --------------- | --------------------- | ----------------------------------- |
-| 👤 **CUSTOMER** | `/customer-dashboard` | Rent gears and manage rentals       |
-| 🏪 **PROVIDER** | `/provider-dashboard` | List gears and manage rental orders |
-| 👑 **ADMIN**    | `/admin-dashboard`    | Manage the entire platform          |
-
----
-
-# 👤 Customer Dashboard
-
-Customers get a dedicated dashboard for managing their rental activities.
-
-### Customer Features
-
-* 🛒 Create rental orders
-* 📦 View active orders
-* ✅ View completed rentals
-* 💳 Make payments
-* 📊 Track order status
-* 👤 Manage profile
-
-### Routes
-
-```text
-/customer-dashboard
-/customer-dashboard/orders
-/customer-dashboard/completed
-```
-
----
-
-# 🏪 Provider Dashboard
-
-Providers can turn their equipment into a rental business.
-
-### Provider Features
-
-* ➕ Add new gears
-* ✏️ Edit gear information
-* 🗑️ Delete gears
-* 📦 View rental orders
-* ✅ Manage order status
-* 📋 View completed rentals
-* 👤 Manage profile
-
-### Routes
-
-```text
-/provider-dashboard
-/provider-dashboard/my-gears
-/provider-dashboard/orders
-/provider-dashboard/completed
-```
-
----
-
-# 👑 Admin Dashboard
-
-Admins have complete control over the platform.
-
-### Admin Features
-
-* 👥 Manage users
-* 🏕️ Manage gears
-* 📂 Manage categories
-* 📊 Monitor platform activities
-* 🔐 Manage platform-level resources
-
-### Routes
-
-```text
-/admin-dashboard
-/admin-dashboard/gear
-/admin-dashboard/users
-```
+| Role | Dashboard Base | Key Capabilities |
+| :--- | :--- | :--- |
+| 👤 **CUSTOMER** | `/customer-dashboard` | Manage active rentals, view order history, complete payments, track delivery status. |
+| 🏪 **PROVIDER** | `/provider-dashboard` | Add/edit/delete equipment listings, approve incoming orders, manage order statuses. |
+| 👑 **ADMIN** | `/admin-dashboard` | Platform metrics, manage all users (roles, bans), inspect and moderate all gear listings. |
 
 ---
 
 # 🔄 Rental Order Lifecycle
 
-GEAR-UP uses a clear rental lifecycle:
-
 ```text
-        ┌─────────┐
-        │ PENDING │
-        └────┬────┘
-             │
-             ▼
-      ┌─────────────┐
-      │  CONFIRMED  │
-      └──────┬──────┘
-             │
-             ▼
-      ┌─────────────┐
-      │  PICKED_UP  │
-      └──────┬──────┘
-             │
-             ▼
-      ┌─────────────┐
-      │   RETURNED  │
-      └─────────────┘
+       ┌─────────────┐
+       │   PENDING   │ ◄── Customer places rental order
+       └──────┬──────┘
+              │
+              ▼
+       ┌─────────────┐
+       │  CONFIRMED  │ ◄── Provider confirms order
+       └──────┬──────┘
+              │
+              ▼
+       ┌─────────────┐
+       │  PICKED_UP  │ ◄── Customer receives / picks up gear
+       └──────┬──────┘
+              │
+              ▼
+       ┌─────────────┐
+       │  RETURNED   │ ◄── Gear returned & inspected (Completed)
+       └─────────────┘
 
-PENDING / CONFIRMED
-        │
-        ▼
-   ┌───────────┐
-   │ CANCELLED │
-   └───────────┘
+       PENDING / CONFIRMED
+              │
+              ▼
+       ┌─────────────┐
+       │  CANCELLED  │ ◄── Order cancelled by customer / provider
+       └─────────────┘
 ```
-
-### Order Statuses
-
-| Status         | Meaning                      |
-| -------------- | ---------------------------- |
-| 🟡 `PENDING`   | Rental request created       |
-| 🔵 `CONFIRMED` | Provider confirmed the order |
-| 🟣 `PICKED_UP` | Customer picked up the gear  |
-| 🟢 `RETURNED`  | Gear returned successfully   |
-| 🔴 `CANCELLED` | Order cancelled              |
 
 ---
 
@@ -270,399 +119,161 @@ PENDING / CONFIRMED
 <div align="center">
 
 ### Frontend
+![Next.js](https://img.shields.io/badge/Next.js-16.3.0_(Turbopack)-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-FF0055?style=for-the-badge&logo=framer)
+![Sonner](https://img.shields.io/badge/Sonner-Toasts-059669?style=for-the-badge)
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge\&logo=next.js)
-
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge\&logo=react)
-
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge\&logo=typescript)
-
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge\&logo=tailwindcss)
-
-### Backend
-
-![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge\&logo=node.js)
-
-![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge\&logo=prisma)
-
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge\&logo=postgresql)
-
-### Services & Tools
-
-![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?style=for-the-badge\&logo=stripe)
-
-![Vercel](https://img.shields.io/badge/Vercel-Deployment-black?style=for-the-badge\&logo=vercel)
+### Backend & Database
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql)
+![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?style=for-the-badge&logo=stripe)
 
 </div>
 
 ---
 
-## 🧰 Complete Technology Stack
-
-| Category           | Technologies                      |
-| ------------------ | --------------------------------- |
-| **Framework**      | Next.js 16                        |
-| **UI Library**     | React 19                          |
-| **Language**       | TypeScript                        |
-| **Styling**        | Tailwind CSS v4                   |
-| **UI Components**  | shadcn/ui, Radix UI               |
-| **Forms**          | React Hook Form                   |
-| **Validation**     | Zod                               |
-| **Authentication** | JWT / Cookie-based Authentication |
-| **Backend**        | Node.js, Express.js               |
-| **Database**       | PostgreSQL                        |
-| **ORM**            | Prisma                            |
-| **Payments**       | Stripe                            |
-| **Animations**     | Framer Motion                     |
-| **Charts**         | Recharts                          |
-| **Notifications**  | Sonner                            |
-| **Icons**          | Lucide React                      |
-| **Deployment**     | Vercel                            |
-
----
-
 # 🗺️ Application Routes
 
-## 🌐 Public Routes
+### 🌐 Public Routes (`app/(publicRoutes)`)
+* `/` — Landing page with Hero, Categories, Featured Gear, and How It Works.
+* `/gear` — Browse gear with real-time search, multi-filter drawer, sorting, and pagination.
+* `/gear/[id]` — Detailed gear specs, image gallery, reviews, and booking card.
+* `/categories` — Category directory.
+* `/how-it-works` — Workflow and platform rental steps.
+* `/about` — Company mission, animated stats, core values.
+* `/contact` — Inquiry form with validation and contact cards.
+* `/faq` — Searchable accordion FAQ.
+* `/blog` — Adventure guides and equipment articles.
+* `/privacy` — Privacy and cookie policy.
+* `/terms` — Terms and conditions.
+* `/rental-policy` — Handover checklists, cleaning, and late fee guidelines.
+* `/profile` — User profile view and modal editor.
 
-| Route           | Description         |
-| --------------- | ------------------- |
-| `/`             | Home / Landing Page |
-| `/categories`   | Browse categories   |
-| `/gear`         | Browse all gears    |
-| `/gear/[id]`    | Gear details        |
-| `/how-it-works` | How GEAR-UP works   |
-| `/login`        | Login               |
-| `/register`     | Registration        |
-| `/profile`      | User profile        |
+### 🔐 Authentication Routes (`app/(auth)`)
+* `/login` — Animated split layout login with credential validation.
+* `/register` — Customer and Provider role-based registration.
 
-## 👤 Customer Routes
-
-| Route                           | Description          |
-| ------------------------------- | -------------------- |
-| `/customer-dashboard`           | Customer overview    |
-| `/customer-dashboard/orders`    | Active rental orders |
-| `/customer-dashboard/completed` | Completed rentals    |
-
-## 🏪 Provider Routes
-
-| Route                           | Description            |
-| ------------------------------- | ---------------------- |
-| `/provider-dashboard`           | Provider overview      |
-| `/provider-dashboard/my-gears`  | Manage gears           |
-| `/provider-dashboard/orders`    | Incoming rental orders |
-| `/provider-dashboard/completed` | Completed orders       |
-
-## 👑 Admin Routes
-
-| Route                    | Description     |
-| ------------------------ | --------------- |
-| `/admin-dashboard`       | Admin overview  |
-| `/admin-dashboard/gear`  | Gear management |
-| `/admin-dashboard/users` | User management |
+### 📊 Dashboard Routes (`app/(dashboards)`)
+* **Customer**: `/customer-dashboard`, `/customer-dashboard/orders`, `/customer-dashboard/completed`
+* **Provider**: `/provider-dashboard`, `/provider-dashboard/my-gears`, `/provider-dashboard/orders`, `/provider-dashboard/completed`
+* **Admin**: `/admin-dashboard`, `/admin-dashboard/gear`, `/admin-dashboard/users`
 
 ---
 
-# 📁 Project Structure
+# 📁 Project Directory Structure
 
 ```text
 gearup-client/
-│
 ├── app/
-│   ├── admin-dashboard/
-│   │   ├── gear/
-│   │   └── users/
+│   ├── (auth)/                     # Auth Route Group
+│   │   ├── _actions/               # Login & Register server actions
+│   │   ├── _components/            # LoginForm, RegisterForm
+│   │   ├── login/                  # /login
+│   │   ├── register/               # /register
+│   │   └── layout.tsx              # Animated Auth Layout
 │   │
-│   ├── customer-dashboard/
-│   │   ├── completed/
-│   │   └── orders/
+│   ├── (dashboards)/               # Role-Based Dashboards Route Group
+│   │   ├── _components/            # Floating Sidebar, Tooltip Content
+│   │   ├── admin-dashboard/        # Admin overview, gear, users
+│   │   ├── customer-dashboard/     # Customer orders & completed rentals
+│   │   ├── provider-dashboard/     # Provider my-gears, orders, inventory
+│   │   └── layout.tsx              # Dashboard layout (no public footer)
 │   │
-│   ├── provider-dashboard/
-│   │   ├── completed/
-│   │   ├── my-gears/
-│   │   └── orders/
+│   ├── (publicRoutes)/             # Public Marketing & Browse Route Group
+│   │   ├── about/                  # /about
+│   │   ├── blog/                   # /blog
+│   │   ├── categories/             # /categories
+│   │   ├── contact/                # /contact
+│   │   ├── faq/                    # /faq
+│   │   ├── gear/                   # /gear (Catalog, Search, Pagination)
+│   │   │   └── [id]/               # /gear/[id] (Details & Booking)
+│   │   ├── how-it-works/           # /how-it-works
+│   │   ├── privacy/                # /privacy
+│   │   ├── profile/                # /profile
+│   │   ├── rental-policy/          # /rental-policy
+│   │   ├── terms/                  # /terms
+│   │   └── layout.tsx              # Public layout with Navbar & Footer
 │   │
-│   ├── categories/
-│   ├── gear/
-│   │   └── [id]/
-│   │
-│   ├── how-it-works/
-│   ├── login/
-│   ├── profile/
-│   ├── register/
-│   │
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
+│   ├── apple-icon.tsx              # Dynamic 180x180 Apple touch icon
+│   ├── globals.css                 # Tailwind CSS v4 theme variables
+│   ├── icon.tsx                    # Dynamic 32x32 Brand Favicon
+│   └── layout.tsx                  # Root HTML Layout & Global Toaster
 │
 ├── components/
-├── config/
-├── hooks/
-├── lib/
-├── services/
-├── types/
-├── public/
-│
-├── components.json
-├── eslint.config.mjs
-├── next.config.ts
+│   ├── modules/                    # Compound domain components
+│   ├── shared/                     # Header, AuthHeader, Footer
+│   └── ui/                         # shadcn/ui & Sonner Toaster
+├── lib/                            # Utility functions (cn)
+├── services/                       # Profile & Session services
+├── types/                          # TypeScript definitions
 ├── package.json
-├── postcss.config.mjs
-├── proxy.ts
 └── README.md
 ```
 
 ---
 
-# 🔐 Authentication & Authorization
+# ⚙️ Environment Configuration
 
-GEAR-UP implements role-based access control.
-
-```text
-                   ┌─────────────┐
-                   │    USER     │
-                   └──────┬──────┘
-                          │
-              ┌───────────┼───────────┐
-              ▼           ▼           ▼
-         CUSTOMER      PROVIDER      ADMIN
-              │           │           │
-              ▼           ▼           ▼
-        Customer DB   Provider DB   Admin DB
-        Dashboard     Dashboard     Dashboard
-```
-
-Protected dashboard routes are accessible according to the authenticated user's role.
-
----
-
-# ⚙️ Environment Variables
-
-Create a `.env.local` file in the project root:
+Create a `.env.local` file in the root directory:
 
 ```env
+# Backend API Base URL
+BACKEND_APP_URL="https://gearup-olive.vercel.app"
 NEXT_PUBLIC_API_BASE_URL="https://gearup-olive.vercel.app/api"
+
+# Application URL
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="your_stripe_publishable_key"
+
+# Stripe Publishable Key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
 ```
-
-### Variables
-
-| Variable                             | Purpose                  |
-| ------------------------------------ | ------------------------ |
-| `NEXT_PUBLIC_API_BASE_URL`           | Backend API base URL     |
-| `NEXT_PUBLIC_APP_URL`                | Frontend application URL |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key   |
-
-> ⚠️ Never expose Stripe secret keys or other private credentials in frontend environment variables.
 
 ---
 
 # 🏃 Getting Started
 
-## 1️⃣ Clone the Repository
-
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/shehabRabby/GEAR-UP-B7A4.git
+git clone https://github.com/sakib404-hub/B7A5-FRONTEND.git
+cd B7A5-FRONTEND
 ```
 
-## 2️⃣ Install Dependencies
-
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-## 3️⃣ Configure Environment Variables
-
-Create:
-
-```text
-.env.local
-```
-
-Then add the required configuration.
-
-## 4️⃣ Start Development Server
-
+### 3. Run Development Server
 ```bash
 npm run dev
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The application will run at:
-
-```text
-http://localhost:3000
-```
-
----
-
-# 🏗️ Production Build
-
-Build the application:
-
+### 4. Build for Production
 ```bash
 npm run build
-```
-
-Start the production server:
-
-```bash
 npm run start
 ```
 
 ---
 
-# ☁️ Deployment
-
-GEAR-UP is deployed using **Vercel**.
-
-### Frontend
-
-🚀 **Live Application**
-
-**https://gearup-client-sand.vercel.app**
-
-### Backend
-
-⚙️ **Live API**
-
-**https://gearup-olive.vercel.app**
-
----
-
-# 🔌 System Architecture
-
-```text
-                    GEAR-UP PLATFORM
-                          │
-              ┌───────────┴───────────┐
-              │                       │
-          FRONTEND                 BACKEND
-          Next.js                 Express.js
-              │                       │
-              │                       ▼
-              │                    Prisma
-              │                       │
-              │                       ▼
-              │                  PostgreSQL
-              │
-              ▼
-        Stripe Checkout
-              │
-              ▼
-        Payment Webhook
-              │
-              └──────────────► Backend
-```
-
----
-
-# 📊 Platform Architecture
-
-```text
-                         ┌───────────────┐
-                         │    GEAR-UP    │
-                         └───────┬───────┘
-                                 │
-              ┌──────────────────┼──────────────────┐
-              │                  │                  │
-              ▼                  ▼                  ▼
-          CUSTOMER           PROVIDER             ADMIN
-              │                  │                  │
-              ▼                  ▼                  ▼
-         Rent Gears         List Gears        Manage Users
-         Make Payment       Manage Orders      Manage Gears
-         Track Orders       Update Status       Manage Platform
-              │                  │                  │
-              └──────────────────┼──────────────────┘
-                                 │
-                                 ▼
-                         PostgreSQL Database
-```
-
----
-
-# 🌟 What Makes GEAR-UP Special?
-
-### 🏕️ Multi-Vendor Marketplace
-
-Multiple providers can list their equipment and manage their own rental business.
-
-### 🔐 Role-Based Architecture
-
-Each user receives a dashboard specifically designed for their role.
-
-### 💳 Integrated Payments
-
-Stripe provides a secure and reliable online payment experience.
-
-### 📦 Complete Rental Lifecycle
-
-From order creation to confirmation, pickup, and return, the complete rental process is managed digitally.
-
-### 📱 Responsive Experience
-
-The application is designed to work across desktop, tablet, and mobile devices.
-
-### ⚡ Modern Full-Stack Architecture
-
-Built using a modern TypeScript-based stack with Next.js, Express.js, Prisma, and PostgreSQL.
-
----
-
-# 📈 Future Improvements
-
-Potential future improvements include:
-
-* ⭐ Gear reviews and ratings
-* 🔔 Real-time notifications
-* 💬 Customer-provider messaging
-* 📍 Location-based gear discovery
-* ❤️ Wishlist functionality
-* 🔎 Advanced filtering
-* 📅 Calendar-based availability
-* 📊 More advanced analytics
-* 📱 Progressive Web App support
-
----
-
-# 🤝 Contributing
-
-Contributions, suggestions, and feedback are welcome.
-
-1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Commit your changes
-5. Push the branch
-6. Open a Pull Request
-
----
-
 # 👨‍💻 Author
 
-## Md. Shakib Hossen
-
-**Junior Frontend & Full-Stack Web Developer**
-
-Passionate about building modern, scalable, and user-friendly web applications with JavaScript, TypeScript, React, Next.js, and Node.js.
-
----
-
-# ⭐ GEAR-UP
-
-### **Rent the Gear. Explore More.**
-
-**Built with ❤️ using Next.js, TypeScript, Prisma, PostgreSQL & Stripe.**
+### **Md. Shakib Hossen**
+* **Role**: Frontend & Full-Stack Web Developer
+* **GitHub**: [@sakib404-hub](https://github.com/sakib404-hub)
+* **Project**: GEAR-UP Outdoor Equipment Rental Marketplace
 
 ---
 
 <div align="center">
 
-### 🚀 Try GEAR-UP Today
+### ⭐ GEAR-UP — Rent the Gear. Explore More.
 
-**[🌐 Open Frontend](https://gearup-client-sand.vercel.app)**
-
-**[⚙️ Open Backend API](https://gearup-olive.vercel.app)**
+**Built with ❤️ using Next.js 16, TypeScript, Tailwind CSS v4, Framer Motion & PostgreSQL.**
 
 </div>

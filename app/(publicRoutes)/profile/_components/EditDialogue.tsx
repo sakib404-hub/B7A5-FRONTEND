@@ -73,11 +73,12 @@ export const EditProfileDialog = ({
 
       const result = await editProfile(formData);
 
-      if(!result.success){
-        toast.error(result.message)
+      if (!result.success) {
+        toast.error(result.message || "Failed to update profile.");
+        return;
       }
 
-      toast.success(result.message);
+      toast.success(result.message || "Profile updated successfully!");
       router.refresh();
       setOpen(false);
     } catch {
