@@ -24,7 +24,7 @@ import {
 import { NavbarProps } from "@/types/types";
 import { logOut } from "@/services/logOut";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -34,17 +34,19 @@ const navItems = [
 ];
 
 export const Navbar = ({ user }: NavbarProps) => {
+  const router = useRouter();
+
   const handleLogout = async () => {
     await logOut();
     toast.success("User Logged Out Successfully.");
-    redirect('/login');
+    router.push("/login");
   };
 
   const dashboardPath = {
-  CUSTOMER: "/customer-dashboard",
-  PROVIDER: "/provider-dashboard",
-  ADMIN: "/admin-dashboard",
-}[user?.role ?? "CUSTOMER"];
+    CUSTOMER: "/customer-dashboard",
+    PROVIDER: "/provider-dashboard",
+    ADMIN: "/admin-dashboard",
+  }[user?.role ?? "CUSTOMER"];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
@@ -204,9 +206,9 @@ export const Navbar = ({ user }: NavbarProps) => {
                     </div>
                   </div>
 
-                {/* user menu  */}
+                  {/* user menu  */}
                   <Button variant="ghost" asChild className="justify-start">
-                    <Link href="/dashboard">
+                    <Link href={dashboardPath!}>
                       <LayoutDashboard className="mr-2 size-4" />
                       Dashboard
                     </Link>

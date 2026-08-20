@@ -1,6 +1,6 @@
 "use client";
 
-import { motion,  type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
   Users,
   UserRound,
@@ -9,6 +9,7 @@ import {
   CreditCard,
   TrendingUp,
   CalendarDays,
+  ShieldCheck,
   LucideIcon,
 } from "lucide-react";
 
@@ -23,41 +24,36 @@ interface Props {
   summary: AdminSummaryType;
 }
 
-/* =========================
-   Animation Variants
-========================= */
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.06,
     },
   },
 };
 
-const itemVariants : Variants = {
+const itemVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 20,
+    y: 15,
   },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.45,
+      duration: 0.35,
       ease: "easeOut",
     },
   },
 };
 
-/* =========================
-   Reusable Insight Card
-========================= */
 interface InsightCardProps {
   title: string;
   value: string | number;
   description: string;
   icon?: LucideIcon;
+  colorClass?: string;
 }
 
 const InsightCard = ({
@@ -65,65 +61,49 @@ const InsightCard = ({
   value,
   description,
   icon: Icon,
+  colorClass = "text-primary",
 }: InsightCardProps) => (
   <motion.div
-    whileHover={{ y: -3 }}
+    whileHover={{ y: -2 }}
     transition={{ duration: 0.2 }}
-    className="rounded-xl border border-border bg-card p-4"
+    className="rounded-2xl border border-border/60 bg-card p-4 shadow-xs transition-all hover:shadow-md"
   >
-    <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
-      {Icon && <Icon className="h-4 w-4 text-primary" />}
-      {title}
+    <div className="mb-2 flex items-center justify-between">
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {title}
+      </span>
+      {Icon && <Icon className={`size-4 ${colorClass}`} />}
     </div>
 
-    <p className="text-2xl font-bold text-foreground">
+    <p className="text-2xl font-bold tracking-tight text-foreground">
       {value}
     </p>
 
-    <p className="mt-1 text-xs text-muted-foreground">
+    <p className="mt-1 text-xs text-muted-foreground/80">
       {description}
     </p>
   </motion.div>
 );
 
-/* =========================
-   Main Component
-========================= */
 export const AdminSummary = ({ summary }: Props) => {
   const completionRate =
     summary.rentals.total > 0
-      ? Math.round(
-          (summary.rentals.completed /
-            summary.rentals.total) *
-            100
-        )
+      ? Math.round((summary.rentals.completed / summary.rentals.total) * 100)
       : 0;
 
   const gearAvailability =
     summary.gears.total > 0
-      ? Math.round(
-          (summary.gears.available /
-            summary.gears.total) *
-            100
-        )
+      ? Math.round((summary.gears.available / summary.gears.total) * 100)
       : 0;
 
   const providerRatio =
     summary.users.total > 0
-      ? Math.round(
-          (summary.users.providers /
-            summary.users.total) *
-            100
-        )
+      ? Math.round((summary.users.providers / summary.users.total) * 100)
       : 0;
 
   const paymentRate =
     summary.rentals.total > 0
-      ? Math.round(
-          (summary.payments.paidOrders /
-            summary.rentals.total) *
-            100
-        )
+      ? Math.round((summary.payments.paidOrders / summary.rentals.total) * 100)
       : 0;
 
   return (
@@ -131,11 +111,9 @@ export const AdminSummary = ({ summary }: Props) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-8"
     >
-      {/* =========================
-          Primary Statistics
-      ========================== */}
+      {/* 4-Column Primary Metrics */}
       <motion.section
         variants={itemVariants}
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
@@ -143,64 +121,64 @@ export const AdminSummary = ({ summary }: Props) => {
         <SummaryCard
           title="Total Users"
           value={summary.users.total}
-          description={`${summary.users.customers} customers`}
+          description={`${summary.users.customers} registered customers`}
           icon={Users}
+          colorClass="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
         />
 
         <SummaryCard
-          title="Providers"
+          title="Equipment Providers"
           value={summary.users.providers}
-          description="Gear providers"
+          description={`${providerRatio}% of total community`}
           icon={UserRound}
+          colorClass="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+        />
+
+        <SummaryCard
+          title="Gear Catalog"
+          value={summary.gears.total}
+          description={`${summary.gears.available} ready for bookings`}
+          icon={Package}
+          colorClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
         />
 
         <SummaryCard
           title="Categories"
           value={summary.categories.total}
-          description="Gear categories"
+          description="Active equipment categories"
           icon={FolderTree}
-        />
-
-        <SummaryCard
-          title="Total Gear"
-          value={summary.gears.total}
-          description={`${summary.gears.available} currently available`}
-          icon={Package}
+          colorClass="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
         />
       </motion.section>
 
-      {/* =========================
-          Highlight Statistics
-      ========================== */}
+      {/* 2-Column Big Financial Highlights */}
       <motion.section
         variants={itemVariants}
         className="grid gap-4 md:grid-cols-2"
       >
         <SummaryCard
-          title="Total Revenue"
-          value={`$${summary.payments.totalRevenue}`}
-          description={`${summary.payments.total} successful payments`}
+          title="Gross Platform Revenue"
+          value={`$${summary.payments.totalRevenue.toLocaleString()}`}
+          description={`${summary.payments.total} processed payments`}
           icon={CreditCard}
+          colorClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
         />
 
         <SummaryCard
-          title="Total Rentals"
+          title="Lifetime Rental Volume"
           value={summary.rentals.total}
-          description={`${summary.rentals.completed} rentals completed`}
+          description={`${summary.rentals.completed} successfully fulfilled`}
           icon={CalendarDays}
+          colorClass="bg-primary/10 text-primary border-primary/20"
         />
       </motion.section>
 
-      {/* =========================
-          Rental Analytics
-      ========================== */}
+      {/* Rental Bar Distribution */}
       <motion.section variants={itemVariants}>
         <RentalStatusChart rentals={summary.rentals} />
       </motion.section>
 
-      {/* =========================
-          Analytics Grid
-      ========================== */}
+      {/* 3-Column Analytics Grid */}
       <motion.section
         variants={itemVariants}
         className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
@@ -210,36 +188,41 @@ export const AdminSummary = ({ summary }: Props) => {
         <PaymentOverview payments={summary.payments} />
       </motion.section>
 
-      {/* =========================
-          Quick Insights
-      ========================== */}
+      {/* Quick Insights Matrix */}
       <motion.section
         variants={itemVariants}
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
       >
         <InsightCard
-          title="Completion Rate"
+          title="Order Completion"
           value={`${completionRate}%`}
-          description="Completed rentals"
+          description="Rentals completed vs total"
           icon={TrendingUp}
+          colorClass="text-emerald-500"
         />
 
         <InsightCard
-          title="Gear Availability"
+          title="Readiness Ratio"
           value={`${gearAvailability}%`}
-          description="Gear currently available"
+          description="Available inventory vs total"
+          icon={Package}
+          colorClass="text-primary"
         />
 
         <InsightCard
-          title="Provider Ratio"
+          title="Provider Base"
           value={`${providerRatio}%`}
-          description="Of total registered users"
+          description="Provider percentage of users"
+          icon={UserRound}
+          colorClass="text-purple-500"
         />
 
         <InsightCard
-          title="Payment Rate"
+          title="Settlement Rate"
           value={`${paymentRate}%`}
-          description="Orders with payment"
+          description="Orders with confirmed payments"
+          icon={CreditCard}
+          colorClass="text-blue-500"
         />
       </motion.section>
     </motion.div>

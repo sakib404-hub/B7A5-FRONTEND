@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   Cell,
   Pie,
@@ -15,11 +14,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-
-import {
-  CreditCard,
-  TrendingUp,
-} from "lucide-react";
+import { CreditCard, TrendingUp } from "lucide-react";
 
 interface Props {
   payments: {
@@ -47,141 +42,93 @@ export const PaymentOverview = ({ payments }: Props) => {
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.25 }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.1 }}
       className="h-full"
     >
-      <Card className="h-full border-border bg-card">
-        <CardHeader className="flex flex-row items-start justify-between space-y-0">
+      <Card className="h-full rounded-2xl border border-border/60 bg-card shadow-xs">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div>
-            <CardTitle className="text-base font-semibold text-foreground">
-              Payment Overview
+            <CardTitle className="text-base font-bold text-foreground">
+              Revenue & Settlements
             </CardTitle>
-
-            <p className="mt-1 text-xs text-muted-foreground">
-              Payment and revenue summary
+            <p className="text-xs text-muted-foreground">
+              Platform transaction performance
             </p>
           </div>
-
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-            <CreditCard className="h-5 w-5 text-primary" />
+          <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <CreditCard className="size-4.5" />
           </div>
         </CardHeader>
 
-        <CardContent>
-          {/* Revenue */}
-          <div className="mb-3">
-            <p className="text-xs text-muted-foreground">
-              Total Revenue
+        <CardContent className="space-y-4 pt-2">
+          {/* Revenue Headline */}
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Gross Platform Revenue
             </p>
-
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="mt-1 text-3xl font-bold tracking-tight text-foreground"
-            >
+            <p className="mt-1 text-3xl font-extrabold tracking-tight text-foreground">
               ${payments.totalRevenue.toLocaleString()}
-            </motion.p>
-
-            <div className="mt-1 flex items-center gap-1 text-xs text-primary">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span>{payments.total} total payments</span>
+            </p>
+            <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              <TrendingUp className="size-3.5" />
+              <span>{payments.total} successful transactions</span>
             </div>
           </div>
 
-          {/* Chart */}
-          <div className="relative h-47.5">
+          {/* Donut Chart */}
+          <div className="relative h-44">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   dataKey="value"
                   nameKey="name"
-                  innerRadius={55}
-                  outerRadius={78}
+                  innerRadius={50}
+                  outerRadius={72}
                   paddingAngle={4}
                   cornerRadius={6}
                   stroke="none"
                 >
-                  {data.map((_, index) => (
-                    <Cell
-                      key={index}
-                      fill={
-                        index === 0
-                          ? "hsl(var(--primary))"
-                          : "hsl(var(--muted))"
-                      }
-                    />
-                  ))}
+                  <Cell fill="oklch(0.53 0.17 155)" />
+                  <Cell fill="oklch(0.7 0.18 45)" />
                 </Pie>
-
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                    color: "hsl(var(--primary))",
-                  }}
-                />
+                <Tooltip />
               </PieChart>
             </ResponsiveContainer>
 
-            {/* Center */}
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <motion.p
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-2xl font-bold text-foreground"
-              >
+              <span className="text-2xl font-extrabold text-foreground">
                 {paymentRate}%
-              </motion.p>
-
-              <p className="text-xs text-muted-foreground">
-                Payment Rate
-              </p>
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Settled
+              </span>
             </div>
           </div>
 
-          {/* Payment Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-border bg-primary/5 p-3">
-              <div className="mb-1 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-primary" />
-                <span className="text-xs text-muted-foreground">
-                  Paid
-                </span>
+          {/* Stats Breakdown */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="size-2 rounded-full bg-emerald-500" />
+                <span>Paid Orders</span>
               </div>
-
-              <p className="text-xl font-semibold text-foreground">
+              <p className="mt-1 text-lg font-bold text-foreground">
                 {payments.paidOrders}
               </p>
             </div>
 
-            <div className="rounded-lg border border-border bg-muted p-3">
-              <div className="mb-1 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-                <span className="text-xs text-muted-foreground">
-                  Unpaid
-                </span>
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="size-2 rounded-full bg-amber-500" />
+                <span>Unpaid</span>
               </div>
-
-              <p className="text-xl font-semibold text-foreground">
+              <p className="mt-1 text-lg font-bold text-foreground">
                 {payments.unpaidOrders}
               </p>
             </div>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-            <span className="text-sm text-muted-foreground">
-              Payment records
-            </span>
-
-            <span className="font-semibold text-foreground">
-              {payments.total}
-            </span>
           </div>
         </CardContent>
       </Card>

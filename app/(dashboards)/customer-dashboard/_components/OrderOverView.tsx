@@ -5,18 +5,19 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { BarChart3 } from "lucide-react";
 
 interface OrderOverviewProps {
   orders: {
@@ -29,59 +30,83 @@ interface OrderOverviewProps {
   };
 }
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-border/80 bg-background/95 p-3 shadow-lg backdrop-blur-md">
+        <p className="text-xs font-semibold text-foreground">{label}</p>
+        <p className="mt-1 text-sm font-bold text-primary">
+          {payload[0].value} {payload[0].value === 1 ? "order" : "orders"}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const OrderOverview = ({ orders }: OrderOverviewProps) => {
   const data = [
-    { status: "Pending", orders: orders.pending },
-    { status: "Confirmed", orders: orders.confirmed },
-    { status: "Picked Up", orders: orders.pickedUp },
-    { status: "Returned", orders: orders.returned },
-    { status: "Cancelled", orders: orders.cancelled },
+    { status: "Pending", orders: orders.pending, color: "var(--color-chart-4)" },
+    { status: "Confirmed", orders: orders.confirmed, color: "var(--color-chart-2)" },
+    { status: "Picked Up", orders: orders.pickedUp, color: "var(--color-chart-3)" },
+    { status: "Returned", orders: orders.returned, color: "var(--color-chart-1)" },
+    { status: "Cancelled", orders: orders.cancelled, color: "var(--color-chart-5)" },
   ];
 
   return (
     <motion.div
       className="lg:col-span-2"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
-      <Card className="rounded-2xl border-[#d8e9e5] bg-white shadow-[0_4px_20px_rgba(63,113,103,0.07)]">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-slate-800">
-            Rental Order Overview
-          </CardTitle>
-
-          <p className="text-sm text-slate-500">
-            Overview of your rental order statuses
-          </p>
+      <Card className="h-full rounded-2xl border border-border/60 bg-card shadow-xs">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div>
+            <CardTitle className="text-base font-bold tracking-tight text-foreground sm:text-lg">
+              Rental Orders Distribution
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Current breakdown across all lifecycle stages
+            </p>
+          </div>
+          <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <BarChart3 className="size-4.5" />
+          </div>
         </CardHeader>
 
-        <CardContent>
-          <div className="h-80 w-full">
+        <CardContent className="pt-4">
+          <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+              <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
+                  stroke="oklch(0.5 0.01 240 / 0.15)"
                 />
-
                 <XAxis
                   dataKey="status"
-                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12, fill: "oklch(0.5 0.015 240)" }}
                 />
-
                 <YAxis
                   allowDecimals={false}
-                  tick={{ fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12, fill: "oklch(0.5 0.015 240)" }}
                 />
-
-                <Tooltip />
-
+                <Tooltip content={<CustomTooltip />} />
                 <Bar
                   dataKey="orders"
-                  fill="#3f7167"
-                  radius={[6, 6, 0, 0]}
-                />
+                  radius={[8, 8, 0, 0]}
+                  fill="oklch(0.53 0.17 155)"
+                  animationDuration={800}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>

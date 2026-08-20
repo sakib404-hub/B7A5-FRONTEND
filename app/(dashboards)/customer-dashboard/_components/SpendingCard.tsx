@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CreditCard, Wallet } from "lucide-react";
-
+import { CreditCard, Sparkles, TrendingUp, Wallet } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,46 +16,51 @@ interface SpendingCardProps {
 const SpendingCard = ({ totalSpent }: SpendingCardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.1 }}
     >
-      <Card className="h-full overflow-hidden rounded-2xl border-[#d8e9e5] bg-white shadow-[0_4px_20px_rgba(63,113,103,0.07)]">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-lg text-slate-800">
-                Spending
-              </CardTitle>
-
-              <p className="mt-1 text-sm text-slate-500">
-                Your total rental spending
-              </p>
-            </div>
-
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#e8f3f0]">
-              <CreditCard className="h-5 w-5 text-[#3f7167]" />
-            </div>
+      <Card className="flex h-full flex-col justify-between rounded-2xl border border-border/60 bg-card shadow-xs">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div>
+            <CardTitle className="text-base font-bold tracking-tight text-foreground sm:text-lg">
+              Rental Budget
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Total expenditure to date
+            </p>
+          </div>
+          <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <CreditCard className="size-4.5" />
           </div>
         </CardHeader>
 
-        <CardContent>
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-xl bg-[#edf6f4] p-6"
-          >
-            <Wallet className="mb-3 h-6 w-6 text-[#3f7167]" />
+        <CardContent className="flex flex-1 flex-col justify-between gap-4 pt-4">
+          <div className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-linear-to-br from-emerald-500/10 via-card to-background p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                <Wallet className="size-5" />
+              </div>
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                <Sparkles className="size-3" />
+                Verified
+              </span>
+            </div>
 
-            <p className="text-sm text-slate-500">
-              Total Spent
-            </p>
+            <div className="mt-4 space-y-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Total Amount Paid
+              </p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                ${totalSpent.toLocaleString()}
+              </h2>
+            </div>
+          </div>
 
-            <h2 className="mt-1 text-3xl font-bold text-[#3f7167]">
-              ${totalSpent}
-            </h2>
-          </motion.div>
+          <div className="rounded-xl border border-border/50 bg-muted/40 p-3.5 text-xs text-muted-foreground flex items-center gap-2">
+            <TrendingUp className="size-4 shrink-0 text-primary" />
+            <span>Rental spending updates in real-time as orders are paid and settled.</span>
+          </div>
         </CardContent>
       </Card>
     </motion.div>

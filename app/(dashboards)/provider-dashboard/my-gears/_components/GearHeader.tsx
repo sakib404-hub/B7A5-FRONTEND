@@ -1,40 +1,39 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Package, Plus } from "lucide-react";
 import { CreateGearDialog } from "./CreateGearDialogue";
 
 export interface Category {
-  id : string;
-  name : string;
-  description : string;
-  createdAt : string
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
 }
 
 export interface CategoryDiaLogueProps {
-  categories : Category[]
+  categories: Category[];
 }
 
-export const GearHeader = ({categories} : CategoryDiaLogueProps) => {
+export const GearHeader = ({ categories }: CategoryDiaLogueProps) => {
   return (
-    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-            My Gears
-          </h1>
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 pb-6">
+      <div className="flex items-center gap-3.5">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Package className="size-6" />
+        </div>
 
-          <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Manage your rental gears, update their
-            information, and keep your listings organized.
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Equipment Inventory
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            List, update, and manage your outdoor equipment and rental availability.
           </p>
-        </motion.div>
+        </div>
       </div>
 
-      <CreateGearDialog categories={categories}/>
+      <CreateGearDialog categories={categories} />
     </div>
   );
 };

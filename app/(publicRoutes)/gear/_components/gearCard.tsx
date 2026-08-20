@@ -9,10 +9,11 @@ import {
   Star,
   User,
 } from "lucide-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 const GearCard = ({ gear }: GearCardProps) => {
+  const router = useRouter();
   const averageRating =
     gear.reviews.length > 0
       ? gear.reviews.reduce(
@@ -143,7 +144,9 @@ const GearCard = ({ gear }: GearCardProps) => {
             whileHover={{
               scale: 1.05,
             }}
-            onClick={()=>{ redirect(`/gear/${gear.id}`) }}
+            onClick={() => {
+              router.push(`/gear/${gear.id}`);
+            }}
             whileTap={{
               scale: 0.95,
             }}

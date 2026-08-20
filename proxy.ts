@@ -32,7 +32,7 @@ export const proxy = async (request: NextRequest) => {
     return pathname.startsWith(route)
   })
 
-  if(!isProtectedRoute  && !isProtectedRoute){
+  if(!isProtectedRoute && !isAuthRoute){
     return NextResponse.next();
   }
 

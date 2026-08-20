@@ -19,10 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import {
-  CalendarDays,
-  TrendingUp,
-} from "lucide-react";
+import { CalendarDays, TrendingUp } from "lucide-react";
 
 interface Props {
   rentals: {
@@ -34,39 +31,54 @@ interface Props {
   };
 }
 
-export const RentalStatusChart = ({
-  rentals,
-}: Props) => {
-  // Chart data
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-border/80 bg-background/95 p-3 shadow-lg backdrop-blur-md">
+        <p className="text-xs font-semibold text-foreground">{label}</p>
+        <p className="mt-1 text-sm font-bold text-primary">
+          {payload[0].value} {payload[0].value === 1 ? "rental" : "rentals"}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export const RentalStatusChart = ({ rentals }: Props) => {
   const data = [
     {
       status: "Pending",
       value: rentals.pending,
-      color: "hsl(38 92% 50%)",
+      color: "oklch(0.7 0.18 45)",
+      bgBadge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
     },
     {
       status: "Confirmed",
       value: rentals.confirmed,
-      color: "hsl(217 91% 60%)",
+      color: "oklch(0.6 0.15 220)",
+      bgBadge: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
     },
     {
       status: "Ongoing",
       value: rentals.ongoing,
-      color: "hsl(262 83% 58%)",
+      color: "oklch(0.65 0.18 280)",
+      bgBadge: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
     },
     {
       status: "Completed",
       value: rentals.completed,
-      color: "hsl(142 71% 45%)",
+      color: "oklch(0.53 0.17 155)",
+      bgBadge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
     },
     {
       status: "Cancelled",
       value: rentals.cancelled,
-      color: "hsl(0 84% 60%)",
+      color: "oklch(0.6 0.22 15)",
+      bgBadge: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
     },
   ];
 
-  // Total rentals
   const totalRentals =
     rentals.pending +
     rentals.confirmed +
@@ -74,261 +86,124 @@ export const RentalStatusChart = ({
     rentals.completed +
     rentals.cancelled;
 
-  // Completion percentage
   const completionRate =
     totalRentals > 0
-      ? Math.round(
-          (rentals.completed / totalRentals) * 100
-        )
+      ? Math.round((rentals.completed / totalRentals) * 100)
       : 0;
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      whileHover={{
-        y: -2,
-      }}
-      transition={{
-        duration: 0.3,
-      }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
       className="w-full"
     >
-      <Card className="overflow-hidden">
-        {/* =========================
-            Header
-        ========================== */}
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          {/* Title */}
+      <Card className="rounded-2xl border border-border/60 bg-card shadow-xs">
+        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/40 pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <CalendarDays className="h-5 w-5 text-primary" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <CalendarDays className="size-5" />
             </div>
 
             <div>
-              <CardTitle className="text-base font-semibold sm:text-lg">
-                Rental Overview
+              <CardTitle className="text-base font-bold text-foreground sm:text-lg">
+                Platform Rental Orders Flow
               </CardTitle>
-
-              <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                Current rental order status
+              <p className="text-xs text-muted-foreground">
+                Distribution across all active and concluded states
               </p>
             </div>
           </div>
 
-          {/* Summary */}
-          <div className="flex items-center gap-5">
-            {/* Total */}
+          <div className="flex items-center gap-6">
             <div>
-              <p className="text-xs text-muted-foreground">
-                Total Rentals
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Total Orders
               </p>
-
-              <motion.p
-                initial={{
-                  opacity: 0,
-                  scale: 0.8,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  delay: 0.2,
-                  duration: 0.4,
-                }}
-                className="text-xl font-bold"
-              >
+              <p className="text-xl font-extrabold text-foreground">
                 {totalRentals}
-              </motion.p>
+              </p>
             </div>
 
-            <div className="hidden h-8 w-px bg-border sm:block" />
+            <div className="hidden h-8 w-px bg-border/60 sm:block" />
 
-            {/* Completion */}
             <div>
-              <div className="flex items-center gap-1 text-xs text-primary">
-                <TrendingUp className="h-3.5 w-3.5" />
-
+              <div className="flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <TrendingUp className="size-3.5" />
                 <span>Completion</span>
               </div>
-
-              <p className="text-xl font-bold">
+              <p className="text-xl font-extrabold text-foreground">
                 {completionRate}%
               </p>
             </div>
           </div>
         </CardHeader>
 
-        {/* =========================
-            Chart
-        ========================== */}
-        <CardContent>
-          <div className="h-80 w-full">
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
-            >
+        <CardContent className="pt-6">
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
-                margin={{
-                  top: 10,
-                  right: 10,
-                  left: -10,
-                  bottom: 10,
-                }}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
-                {/* Grid */}
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="hsl(var(--border))"
-                  opacity={0.6}
+                  stroke="oklch(0.5 0.01 240 / 0.15)"
                 />
 
-                {/* X Axis */}
                 <XAxis
                   dataKey="status"
                   axisLine={false}
                   tickLine={false}
-                  tick={{
-                    fill: "hsl(var(--muted-foreground))",
-                    fontSize: 12,
-                  }}
+                  tick={{ fill: "oklch(0.5 0.015 240)", fontSize: 12 }}
                 />
 
-                {/* Y Axis */}
                 <YAxis
                   allowDecimals={false}
                   axisLine={false}
                   tickLine={false}
-                  tick={{
-                    fill: "hsl(var(--muted-foreground))",
-                    fontSize: 12,
-                  }}
+                  tick={{ fill: "oklch(0.5 0.015 240)", fontSize: 12 }}
                 />
 
-                {/* Bars */}
+                <Tooltip content={<CustomTooltip />} />
+
                 <Bar
                   dataKey="value"
-                  radius={[7, 7, 0, 0]}
-                  animationBegin={200}
-                  animationDuration={900}
-                  animationEasing="ease-out"
-                  minPointSize={3}
+                  radius={[8, 8, 0, 0]}
+                  animationDuration={800}
                 >
                   {data.map((entry) => (
-                    <Cell
-                      key={entry.status}
-                      fill={entry.color}
-                    />
+                    <Cell key={entry.status} fill={entry.color} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* =========================
-              Status Cards
-          ========================== */}
-          <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border pt-4 sm:grid-cols-5">
-            <StatusItem
-              label="Pending"
-              value={rentals.pending}
-              color="hsl(38 92% 50%)"
-            />
-
-            <StatusItem
-              label="Confirmed"
-              value={rentals.confirmed}
-              color="hsl(217 91% 60%)"
-            />
-
-            <StatusItem
-              label="Ongoing"
-              value={rentals.ongoing}
-              color="hsl(262 83% 58%)"
-            />
-
-            <StatusItem
-              label="Completed"
-              value={rentals.completed}
-              color="hsl(142 71% 45%)"
-            />
-
-            <StatusItem
-              label="Cancelled"
-              value={rentals.cancelled}
-              color="hsl(0 84% 60%)"
-            />
+          <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-5 border-t border-border/40 pt-4">
+            {data.map((item) => (
+              <div
+                key={item.status}
+                className="rounded-xl border border-border/50 bg-muted/20 p-3 transition-colors hover:bg-muted/40"
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="size-2 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {item.status}
+                  </span>
+                </div>
+                <p className="mt-1 text-lg font-bold text-foreground">
+                  {item.value}
+                </p>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
-    </motion.div>
-  );
-};
-
-/* =========================================
-   Status Item
-========================================= */
-
-interface StatusItemProps {
-  label: string;
-  value: number;
-  color: string;
-}
-
-const StatusItem = ({
-  label,
-  value,
-  color,
-}: StatusItemProps) => {
-  return (
-    <motion.div
-      whileHover={{
-        y: -2,
-        scale: 1.01,
-      }}
-      transition={{
-        duration: 0.2,
-      }}
-      className="rounded-lg border border-border bg-muted/30 px-3 py-2 transition-colors hover:bg-muted/60"
-    >
-      <div className="flex items-center gap-2">
-        <span
-          className="h-2 w-2 rounded-full"
-          style={{
-            backgroundColor: color,
-          }}
-        />
-
-        <span className="text-xs text-muted-foreground">
-          {label}
-        </span>
-      </div>
-
-      <motion.p
-        initial={{
-          opacity: 0,
-          y: 5,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.3,
-        }}
-        className="mt-1 text-sm font-semibold"
-      >
-        {value}
-      </motion.p>
     </motion.div>
   );
 };

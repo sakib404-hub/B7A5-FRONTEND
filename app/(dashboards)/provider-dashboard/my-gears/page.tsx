@@ -7,18 +7,13 @@ import { getAllCategory } from "@/app/(publicRoutes)/categories/_actions/getAllC
 const MyGearsPage = async () => {
   const [providerGears, categoryInformation] = await Promise.all([
     getProviderGear(),
-    getAllCategory()
-  ])
+    getAllCategory(),
+  ]);
 
   return (
-    <div className="space-y-8 p-6">
-      <GearHeader 
-      categories={categoryInformation.data}
-      />
-
-      <GearGrid
-        gears={providerGears?.data ?? []}
-      />
+    <div className="space-y-6">
+      <GearHeader categories={categoryInformation?.data || []} />
+      <GearGrid gears={providerGears?.data ?? []} />
     </div>
   );
 };

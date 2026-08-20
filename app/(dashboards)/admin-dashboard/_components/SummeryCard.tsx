@@ -9,6 +9,7 @@ interface SummaryCardProps {
   value: string | number;
   description?: string;
   icon: LucideIcon;
+  colorClass?: string;
 }
 
 export const SummaryCard = ({
@@ -16,93 +17,37 @@ export const SummaryCard = ({
   value,
   description,
   icon: Icon,
+  colorClass = "bg-primary/10 text-primary border-primary/20",
 }: SummaryCardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.4,
-        ease: "easeOut",
-      }}
-      whileHover={{
-        y: -5,
-      }}
+      transition={{ duration: 0.35 }}
+      whileHover={{ y: -3 }}
       className="h-full"
     >
-      <Card
-        className="
-          h-full
-          border-[#d8e9e5]
-          bg-white
-          shadow-[0_4px_20px_rgba(52,90,80,0.06)]
-          transition-shadow
-          duration-300
-          hover:shadow-[0_8px_25px_rgba(52,90,80,0.10)]
-        "
-      >
-        <CardContent className="flex h-full items-center justify-between p-5">
-          {/* Left Content */}
-          <div>
-            <p className="text-sm font-medium text-slate-600">
+      <Card className="h-full rounded-2xl border border-border/60 bg-card p-5 shadow-xs transition-all duration-200 hover:border-primary/30 hover:shadow-md">
+        <CardContent className="flex h-full items-center justify-between p-0">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {title}
             </p>
 
-            <motion.h3
-              key={value}
-              initial={{
-                opacity: 0,
-                y: 6,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.3,
-              }}
-              className="mt-2 text-2xl font-bold text-slate-800"
-            >
+            <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               {value}
-            </motion.h3>
+            </h3>
 
             {description && (
-              <motion.p
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                transition={{
-                  delay: 0.1,
-                }}
-                className="mt-1 text-xs text-slate-500"
-              >
+              <p className="text-xs text-muted-foreground/80">
                 {description}
-              </motion.p>
+              </p>
             )}
           </div>
 
-          {/* Icon */}
-          <motion.div
-            whileHover={{
-              scale: 1.1,
-              rotate: 5,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 15,
-            }}
-            className="
-              rounded-xl
-              bg-[#e8f3f0]
-              p-3
-            "
-          >
-            <Icon className="h-5 w-5 text-[#3f7167]" />
-          </motion.div>
+          <div className={`flex size-11 items-center justify-center rounded-xl border ${colorClass}`}>
+            <Icon className="size-5" />
+          </div>
         </CardContent>
       </Card>
     </motion.div>

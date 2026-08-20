@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Loader2 } from "lucide-react";
-
+import { CheckCircle2, CreditCard, Loader2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +10,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import { handlePayment } from "../_actions/handlePayment";
 import { Order } from "./MyOrders";
 
@@ -35,7 +33,6 @@ export const PaymentStatus = ({
 
     try {
       setIsLoading(true);
-
       await handlePayment(orderId);
     } catch (error) {
       console.error("Payment error:", error);
@@ -44,27 +41,30 @@ export const PaymentStatus = ({
   };
 
   return (
-    <div className="flex items-center gap-2">
-      {/* Payment Status */}
+    <div className="flex flex-wrap items-center gap-2">
+      {/* Payment Badge */}
       <Badge
         variant="outline"
-        className={
+        className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${
           isPaid
-            ? "border-green-200 bg-green-50 text-green-700"
-            : "border-orange-200 bg-orange-50 text-orange-700"
-        }
+            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+            : "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+        }`}
       >
         {isPaid ? (
           <>
-            <CheckCircle2 className="mr-1 h-3 w-3" />
+            <CheckCircle2 className="mr-1 size-3.5" />
             Paid
           </>
         ) : (
-          "Unpaid"
+          <>
+            <XCircle className="mr-1 size-3.5" />
+            Unpaid
+          </>
         )}
       </Badge>
 
-      {/* Payment Button */}
+      {/* Action Button */}
       {!isPaid && (
         <TooltipProvider>
           <Tooltip>
@@ -74,23 +74,26 @@ export const PaymentStatus = ({
                   size="sm"
                   disabled={isPending || isLoading}
                   onClick={handlePay}
-                  className="bg-[#3f7167] hover:bg-[#315c54] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-xl shadow-xs font-medium text-xs h-8 px-3"
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
+                      <Loader2 className="mr-1.5 size-3.5 animate-spin" />
+                      Connecting...
                     </>
                   ) : (
-                    "Pay Now"
+                    <>
+                      <CreditCard className="mr-1.5 size-3.5" />
+                      Pay Now
+                    </>
                   )}
                 </Button>
               </span>
             </TooltipTrigger>
 
             {isPending && (
-              <TooltipContent>
-                <p>You can pay after the provider confirms the order.</p>
+              <TooltipContent className="rounded-lg text-xs">
+                <p>Payment available once the provider confirms this rental.</p>
               </TooltipContent>
             )}
           </Tooltip>

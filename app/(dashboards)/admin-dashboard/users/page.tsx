@@ -9,11 +9,7 @@ const ManageUsersPage = async () => {
   return (
     <div className="space-y-6">
       <ManageUsersHeader />
-
-      {/* Users table will go here */}
-      <div className="rounded-xl p-6">
-        <UserTable users={users}></UserTable>
-      </div>
+      <UserTable users={users || []} />
     </div>
   );
 };

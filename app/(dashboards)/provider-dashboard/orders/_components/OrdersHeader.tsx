@@ -5,36 +5,19 @@ import { ClipboardList } from "lucide-react";
 
 export const OrdersHeader = () => {
   return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 15,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        duration: 0.45,
-        ease: "easeOut",
-      }}
-      className="space-y-2"
-    >
-      <div className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">
-          <ClipboardList className="h-5 w-5 text-emerald-700" />
-        </div>
-
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
-          Rental Orders
-        </h1>
+    <div className="flex items-center gap-3.5 border-b border-border/60 pb-6">
+      <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <ClipboardList className="size-6" />
       </div>
 
-      <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
-        Manage your rental orders, review customer requests,
-        and update the status of each order throughout the
-        rental process.
-      </p>
-    </motion.div>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Incoming Rental Orders
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Review customer equipment bookings, confirm orders, and advance lifecycle transitions.
+        </p>
+      </div>
+    </div>
   );
 };

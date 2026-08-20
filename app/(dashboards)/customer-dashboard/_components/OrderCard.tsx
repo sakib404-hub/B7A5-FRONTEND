@@ -1,19 +1,17 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderInfo } from "./OrderInfo";
 import { Badge } from "@/components/ui/badge";
-
 import {
   CalendarDays,
-  CheckCircle2,
   Clock3,
   CreditCard,
   Package,
   Store,
 } from "lucide-react";
 import { Order } from "./MyOrders";
-import { Button } from "@/components/ui/button";
-import { handlePayment } from "../_actions/handlePayment";
 import { PaymentStatus } from "./PaymentStatus";
 
 const formatDate = (date: string) => {
@@ -24,28 +22,26 @@ const formatDate = (date: string) => {
   }).format(new Date(date));
 };
 
-//? order status
-const OrderStatus = ({ status }: { status: Order["status"] }) => {
-  const styles = {
-    PENDING: "border-yellow-200 bg-yellow-50 text-yellow-700",
-
-    CONFIRMED: "border-blue-200 bg-blue-50 text-blue-700",
-
-    ONGOING: "border-purple-200 bg-purple-50 text-purple-700",
-
-    COMPLETED: "border-green-200 bg-green-50 text-green-700",
-
-    CANCELLED: "border-red-200 bg-red-50 text-red-700",
+const OrderStatusBadge = ({ status }: { status: Order["status"] }) => {
+  const styles: Record<string, string> = {
+    PENDING: "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    CONFIRMED: "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    ONGOING: "border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400",
+    COMPLETED: "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+    CANCELLED: "border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400",
   };
 
   return (
-    <Badge variant="outline" className={styles[status]}>
+    <Badge
+      variant="outline"
+      className={`rounded-lg px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${
+        styles[status] ?? "border-border bg-muted text-muted-foreground"
+      }`}
+    >
       {status.toLowerCase()}
     </Badge>
   );
 };
-
-
 
 export const OrderCard = ({
   order,
@@ -56,80 +52,63 @@ export const OrderCard = ({
 }) => {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        delay: index * 0.08,
-        duration: 0.4,
-        ease: "easeOut",
-      }}
-      whileHover={{
-        y: -3,
-      }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.35 }}
+      whileHover={{ y: -2 }}
     >
-      <Card className="overflow-hidden border-[#d8e9e5] bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
-        <CardHeader className="border-b border-[#e8f0ee]">
+      <Card className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-xs transition-all duration-200 hover:border-primary/30 hover:shadow-md">
+        <CardHeader className="border-b border-border/50 bg-muted/20 px-5 py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-base text-slate-800">
-                <Package className="h-4 w-4 text-[#3f7167]" />
-                Rental Order
-              </CardTitle>
-
-              <p className="mt-1 text-xs text-slate-400">
-                Order #{order.id.slice(0, 8)}
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Package className="size-5" />
+              </div>
+              <div>
+                <CardTitle className="text-base font-bold text-foreground">
+                  Rental Order
+                </CardTitle>
+                <p className="font-mono text-xs text-muted-foreground">
+                  ID: #{order.id.slice(0, 8)}
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-
-              <div className="flex items-center gap-2">
-                <OrderStatus status={order.status} />
-
-                <PaymentStatus
-                  isPaid={order.isPaid}
-                  orderId={order.id}
-                  orderStatus={order.status}
-                />
-              </div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <OrderStatusBadge status={order.status} />
+              <PaymentStatus
+                isPaid={order.isPaid}
+                orderId={order.id}
+                orderStatus={order.status}
+              />
             </div>
           </div>
         </CardHeader>
 
         <CardContent className="p-5">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Amount */}
+          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
             <OrderInfo
               icon={CreditCard}
-              label="Total Amount"
+              label="Total Price"
               value={`$${order.totalAmount}`}
             />
 
-            {/* Rental Days */}
             <OrderInfo
               icon={CalendarDays}
-              label="Rental Duration"
-              value={`${order.rentalDays} days`}
+              label="Rental Period"
+              value={`${order.rentalDays} ${order.rentalDays === 1 ? "day" : "days"}`}
             />
 
-            {/* Provider */}
             <OrderInfo
               icon={Store}
-              label="Provider"
-              value={order.gear.provider.name}
-              subValue={order.gear.provider.email}
+              label="Equipment Provider"
+              value={order.gear?.provider?.name || "Verified Provider"}
+              subValue={order.gear?.provider?.email}
             />
 
-            {/* Created */}
             <OrderInfo
               icon={Clock3}
-              label="Ordered On"
+              label="Booking Date"
               value={formatDate(order.createdAt)}
             />
           </div>

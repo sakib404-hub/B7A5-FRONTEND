@@ -31,8 +31,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-
-import { Spinner } from "@/components/ui/spinner";
 import { updateGearInformation } from "../_actions/updateGearInformation";
 
 interface EditGearDialogProps {
@@ -56,7 +54,6 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
 
   const [open, setOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-
   const [formData, setFormData] = useState<EditGearFormData | null>(null);
 
   const {
@@ -76,9 +73,6 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
     setConfirmOpen(true);
   };
 
-  /*
-   * User confirmed the update
-   */
   const handleConfirmUpdate = async () => {
     if (!formData) return;
 
@@ -87,23 +81,18 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
       const result = await updateGearInformation(gear.id, formData);
 
       if (!result.success) {
-        toast.error(result.message);
+        toast.error(result.message || "Failed to update gear");
         return;
       }
 
-      toast.success(result.message || "Gear updated successfully");
-
-      // Close dialogs
+      toast.success(result.message || "Gear listing updated successfully");
       setConfirmOpen(false);
       setOpen(false);
-
-      // Refresh Server Components
       router.refresh();
     } catch (error) {
       console.error("Update gear error:", error);
-
       toast.error("Something went wrong while updating the gear.");
-    }finally{
+    } finally {
       setIsUpdating(false);
     }
   };
@@ -116,103 +105,88 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
           <Button
             type="button"
             variant="outline"
-            className="flex-1 gap-2 border-emerald-200 hover:bg-emerald-50"
+            size="sm"
+            className="flex-1 gap-1.5 rounded-xl border-border/80 text-xs font-semibold text-foreground hover:bg-accent"
           >
-            <Edit className="h-4 w-4" />
-            Edit
+            <Edit className="size-3.5 text-primary" />
+            Edit Info
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="rounded-2xl border-border/80 bg-card sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Edit {gear.title}</DialogTitle>
-
-            <DialogDescription>
-              Update the information of your gear.
+            <DialogTitle className="text-lg font-bold">
+              Edit Equipment Details
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Update pricing, specifications, and overview for &quot;{gear.title}&quot;.
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
             {/* Title */}
-            <div className="space-y-2">
-              <Label htmlFor="title">Gear Title</Label>
-
+            <div className="space-y-1.5">
+              <Label htmlFor="title" className="text-xs font-semibold">
+                Gear Title
+              </Label>
               <Input
                 id="title"
-                placeholder="Enter gear title"
+                placeholder="Equipment title"
+                className="rounded-xl"
                 {...register("title", {
                   required: "Title is required",
-
                   minLength: {
                     value: 3,
                     message: "Title must be at least 3 characters",
                   },
-
-                  maxLength: {
-                    value: 100,
-                    message: "Title cannot exceed 100 characters",
-                  },
                 })}
               />
-
               {errors.title && (
-                <p className="text-sm text-destructive">
-                  {errors.title.message}
-                </p>
+                <p className="text-xs text-destructive">{errors.title.message}</p>
               )}
             </div>
 
             {/* Description */}
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-
+            <div className="space-y-1.5">
+              <Label htmlFor="description" className="text-xs font-semibold">
+                Description
+              </Label>
               <Textarea
                 id="description"
-                placeholder="Describe your gear..."
-                rows={5}
-                className="resize-none"
+                placeholder="Describe your equipment..."
+                rows={4}
+                className="rounded-xl resize-none"
                 {...register("description", {
                   required: "Description is required",
-
                   minLength: {
                     value: 10,
                     message: "Description must be at least 10 characters",
                   },
-
-                  maxLength: {
-                    value: 500,
-                    message: "Description cannot exceed 500 characters",
-                  },
                 })}
               />
-
               {errors.description && (
-                <p className="text-sm text-destructive">
-                  {errors.description.message}
-                </p>
+                <p className="text-xs text-destructive">{errors.description.message}</p>
               )}
             </div>
 
             {/* Price */}
-            <div className="space-y-2">
-              <Label htmlFor="pricePerDay">Price Per Day</Label>
-
+            <div className="space-y-1.5">
+              <Label htmlFor="pricePerDay" className="text-xs font-semibold">
+                Price Per Day ($)
+              </Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                  ৳
+                  $
                 </span>
-
                 <Input
                   id="pricePerDay"
                   type="number"
                   min={1}
                   step="0.01"
-                  className="pl-8"
+                  className="rounded-xl pl-7"
                   {...register("pricePerDay", {
                     required: "Price is required",
-
                     valueAsNumber: true,
-
                     min: {
                       value: 1,
                       message: "Price must be greater than 0",
@@ -220,18 +194,20 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
                   })}
                 />
               </div>
-
               {errors.pricePerDay && (
-                <p className="text-sm text-destructive">
-                  {errors.pricePerDay.message}
-                </p>
+                <p className="text-xs text-destructive">{errors.pricePerDay.message}</p>
               )}
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-2 border-t pt-5">
+            <div className="flex justify-end gap-2 border-t border-border/50 pt-4">
               <DialogClose asChild>
-                <Button type="button" variant="outline" disabled={isSubmitting}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-xl"
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </Button>
               </DialogClose>
@@ -239,12 +215,9 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                className="rounded-xl font-semibold shadow-xs"
               >
-                {isUpdating ? <span className="flex items-center justify-center">
-                  <Spinner></Spinner>
-                  Updating..
-                </span> : "Update Gear"}
+                Review Changes
               </Button>
             </div>
           </form>
@@ -253,37 +226,36 @@ export const EditGearDialog = ({ gear }: EditGearDialogProps) => {
 
       {/* Confirmation Dialog */}
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-2xl border-border/80 bg-card">
           <AlertDialogHeader>
-            <AlertDialogTitle>Update this gear?</AlertDialogTitle>
-
-            <AlertDialogDescription>
-              Are you sure you want to update{" "}
-              <span className="font-semibold text-foreground">
-                {gear.title}
-              </span>
-              ? The current gear information will be replaced with your new
-              information.
+            <AlertDialogTitle className="text-lg font-bold">
+              Confirm Updates
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm text-muted-foreground">
+              Are you sure you want to save changes to &quot;{gear.title}&quot;? The listing will immediately reflect your new details across the marketplace.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUpdating}>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel
+              disabled={isUpdating}
+              className="rounded-xl font-medium"
+            >
               Cancel
             </AlertDialogCancel>
 
             <AlertDialogAction
               onClick={handleConfirmUpdate}
-              disabled={isSubmitting}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              disabled={isUpdating}
+              className="rounded-xl font-semibold shadow-xs"
             >
               {isUpdating ? (
-                <span className="flex items-center justify-center">
-                  <Spinner></Spinner>
-                  Updating...
+                <span className="flex items-center gap-2">
+                  <Loader2 className="size-4 animate-spin" />
+                  Saving...
                 </span>
               ) : (
-                "Yes, Update Gear"
+                "Save Updates"
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

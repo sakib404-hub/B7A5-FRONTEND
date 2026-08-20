@@ -7,6 +7,7 @@ import {
   Package,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 export interface CompletedOrderCardProps {
   order: {
@@ -30,20 +31,14 @@ export interface CompletedOrderCardProps {
   };
 }
 
-export const CompletedOrderCard = ({
-  order,
-}: CompletedOrderCardProps) => {
-  const createdDate = new Date(
-    order.createdAt
-  ).toLocaleDateString("en-US", {
+export const CompletedOrderCard = ({ order }: CompletedOrderCardProps) => {
+  const createdDate = new Date(order.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
-  const completedDate = new Date(
-    order.updatedAt
-  ).toLocaleDateString("en-US", {
+  const completedDate = new Date(order.updatedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -55,122 +50,84 @@ export const CompletedOrderCard = ({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.25 }}
-      className="
-        overflow-hidden
-        rounded-xl border
-        bg-card
-        shadow-sm
-      "
+      className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-xs transition-all hover:border-emerald-500/30 hover:shadow-md"
     >
       <div className="flex flex-col gap-5 p-5 md:flex-row md:items-center">
-        {/* Gear Image / Placeholder */}
-        <div
-          className="
-            flex h-24 w-full shrink-0
-            items-center justify-center
-            overflow-hidden
-            rounded-lg
-            bg-muted
-            md:h-24 md:w-28
-          "
-        >
+        {/* Gear Image */}
+        <div className="flex h-24 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted md:h-24 md:w-28">
           {order.gear?.image ? (
             <img
               src={order.gear.image}
               alt={order.gear.title || "Gear"}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
             />
           ) : (
-            <Package
-              size={32}
-              className="text-muted-foreground"
-            />
+            <Package size={28} className="text-muted-foreground/60" />
           )}
         </div>
 
-        {/* Main Information */}
-        <div className="min-w-0 flex-1">
+        {/* Main Details */}
+        <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-semibold">
-              {order.gear?.title || "Gear Item"}
+            <h3 className="text-base font-bold text-foreground">
+              {order.gear?.title || "Gear Equipment"}
             </h3>
 
-            <span
-              className="
-                inline-flex items-center gap-1
-                rounded-full
-                bg-green-500/10
-                px-2.5 py-1
-                text-xs font-medium
-                text-green-600
-              "
+            <Badge
+              variant="outline"
+              className="rounded-lg border-emerald-500/30 bg-emerald-500/10 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"
             >
-              <CheckCircle2 size={13} />
+              <CheckCircle2 className="mr-1 size-3" />
               Completed
-            </span>
+            </Badge>
           </div>
 
           {order.gear?.brand && (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {order.gear.brand}
+            <p className="text-xs font-medium text-muted-foreground">
+              Brand: {order.gear.brand}
             </p>
           )}
 
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-x-5 gap-y-1 pt-1 text-xs text-muted-foreground">
             <div className="flex items-center gap-1.5">
-              <CalendarDays size={15} />
-              <span>
-                Ordered {createdDate}
-              </span>
+              <CalendarDays className="size-3.5" />
+              <span>Booked: {createdDate}</span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              <Clock3 size={15} />
-              <span>
-                Completed {completedDate}
-              </span>
+              <Clock3 className="size-3.5" />
+              <span>Completed: {completedDate}</span>
             </div>
 
-            <span>
-              {order.rentalDays}{" "}
-              {order.rentalDays === 1 ? "day" : "days"}
+            <span className="font-semibold text-foreground">
+              {order.rentalDays} {order.rentalDays === 1 ? "day" : "days"} duration
             </span>
           </div>
         </div>
 
-        {/* Price */}
-        <div className="shrink-0 md:text-right">
-          <p className="text-xs text-muted-foreground">
-            Total Amount
+        {/* Price & Payment */}
+        <div className="shrink-0 rounded-xl border border-border/50 bg-muted/20 p-3 md:text-right">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Total Settled
           </p>
-
-          <p className="mt-1 text-xl font-bold">
+          <p className="mt-0.5 text-xl font-extrabold text-foreground">
             ${Number(order.totalAmount).toFixed(2)}
           </p>
-
-          <div className="mt-1 flex items-center gap-1 text-xs text-green-600 md:justify-end">
-            <CheckCircle2 size={13} />
-
-            {order.isPaid ? "Paid" : "Unpaid"}
+          <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 md:justify-end">
+            <CheckCircle2 className="size-3.5" />
+            {order.isPaid ? "Payment Settled" : "Unpaid"}
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="border-t bg-muted/30 px-5 py-3">
+      {/* Footer Details */}
+      <div className="border-t border-border/50 bg-muted/20 px-5 py-2.5">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-          <span>
-            Order ID:{" "}
-            <span className="font-medium text-foreground">
-              {order.id.slice(0, 8)}...
-            </span>
+          <span className="font-mono text-[11px]">
+            Order ID: #{order.id.slice(0, 12)}
           </span>
-
-          <span>
-            Status:{" "}
-            <span className="font-medium text-foreground">
-              {order.status}
-            </span>
+          <span className="text-xs font-medium text-primary">
+            Rental Completed & Verified
           </span>
         </div>
       </div>

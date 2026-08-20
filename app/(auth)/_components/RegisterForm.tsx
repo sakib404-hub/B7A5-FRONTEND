@@ -14,25 +14,24 @@ import { useActionState, useEffect, useState } from "react";
 import { registerAction } from "../_actions/registerAction";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
   const [registerState, action, pending] = useActionState(registerAction, null);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
-  useEffect(()=>{
-    if(!registerState){
+  useEffect(() => {
+    if (!registerState) {
       return;
     }
-    if(!registerState.success){
-      // console.log(registerState)
+    if (!registerState.success) {
       toast.error(registerState.message || "Account Creation Failed.");
       return;
     }
-    toast.success(registerState.message || "Account Creation Successfull");
-    redirect('/login');
-
-  },[registerState])
+    toast.success(registerState.message || "Account Creation Successful");
+    router.push("/login");
+  }, [registerState, router]);
   return (
     <div>
       {/* Register Form */}

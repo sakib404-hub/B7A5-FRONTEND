@@ -116,18 +116,21 @@ export interface CategoryCardProps {
 
 export interface SidebarProps {
   role: UserRole;
+  user?: IUser | null;
 }
 
 export interface SidebarItemConfig {
   label: string;
   href: string;
   icon: React.ReactNode;
+  badge?: string | number;
 }
 
 export interface SidebarContentProps {
   role: UserRole;
+  user?: IUser | null;
   handleLogout: () => void;
   isPending: boolean;
-  closeMobile: () => void;
+  closeMobile?: () => void;
 }
 

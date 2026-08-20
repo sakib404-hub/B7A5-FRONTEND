@@ -9,11 +9,12 @@ import { useActionState, useEffect, useState } from "react";
 import { loginAction } from "../_actions/loginAction";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
   const [state, action, pending] = useActionState(loginAction, null);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (!state) {
@@ -25,8 +26,8 @@ export const LoginForm = () => {
     }
 
     toast.success(state.message || "Successfully Logged In.");
-    redirect("/");
-  }, [state]);
+    router.push("/");
+  }, [state, router]);
 
   return (
     <div>

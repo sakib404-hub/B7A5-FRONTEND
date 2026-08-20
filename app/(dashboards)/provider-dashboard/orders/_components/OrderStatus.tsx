@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Lock } from "lucide-react";
+import { CheckCircle2, Loader2, Lock, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateStatus } from "../_action/updateOrderStatus";
-import { Spinner } from "@/components/ui/spinner";
 
 export enum OrderStatus {
   PENDING = "PENDING",
@@ -39,26 +38,11 @@ const statusLabels: Record<OrderStatus, string> = {
   CANCELLED: "Cancelled",
 };
 
-/**
- * Defines valid status transitions.
- */
 const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
-  [OrderStatus.PENDING]: [
-    OrderStatus.CONFIRMED,
-    OrderStatus.CANCELLED,
-  ],
-
-  [OrderStatus.CONFIRMED]: [
-    OrderStatus.PICKED_UP,
-    OrderStatus.CANCELLED,
-  ],
-
-  [OrderStatus.PICKED_UP]: [
-    OrderStatus.RETURNED,
-  ],
-
+  [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
+  [OrderStatus.CONFIRMED]: [OrderStatus.PICKED_UP, OrderStatus.CANCELLED],
+  [OrderStatus.PICKED_UP]: [OrderStatus.RETURNED],
   [OrderStatus.RETURNED]: [],
-
   [OrderStatus.CANCELLED]: [],
 };
 
@@ -68,292 +52,173 @@ export const OrderStatusSelect = ({
   isPaid,
 }: OrderStatusSelectProps) => {
   const router = useRouter();
-
-  const [status, setStatus] =
-    useState<OrderStatus>(currentStatus);
-
+  const [status, setStatus] = useState<OrderStatus>(currentStatus);
   const [loading, setLoading] = useState(false);
-
 
   useEffect(() => {
     setStatus(currentStatus);
   }, [currentStatus]);
 
-  /**
-   * Returned and Cancelled are final statuses.
-   */
   const isTerminal =
     currentStatus === OrderStatus.RETURNED ||
     currentStatus === OrderStatus.CANCELLED;
 
-  /**
-   * Payment is required for operational
-   * statuses such as PICKED_UP.
-   *
-   * But payment is NOT required for:
-   * PENDING → CONFIRMED
-   * PENDING → CANCELLED
-   */
-  const requiresPayment = (
-    nextStatus: OrderStatus
-  ) => {
+  const requiresPayment = (nextStatus: OrderStatus) => {
     return (
       nextStatus === OrderStatus.PICKED_UP ||
       nextStatus === OrderStatus.RETURNED
     );
   };
 
-  const availableStatuses =
-    allowedTransitions[currentStatus].filter(
-      (nextStatus) => {
-        // Provider can confirm/cancel without payment
-        if (
-          nextStatus === OrderStatus.CONFIRMED ||
-          nextStatus === OrderStatus.CANCELLED
-        ) {
-          return true;
-        }
-
-        // Pickup/return require payment
-        if (requiresPayment(nextStatus)) {
-          return isPaid;
-        }
-
+  const availableStatuses = allowedTransitions[currentStatus]?.filter(
+    (nextStatus) => {
+      if (
+        nextStatus === OrderStatus.CONFIRMED ||
+        nextStatus === OrderStatus.CANCELLED
+      ) {
         return true;
       }
-    );
+      if (requiresPayment(nextStatus)) {
+        return isPaid;
+      }
+      return true;
+    }
+  ) || [];
 
   const handleUpdate = async () => {
-    if (isTerminal) {
-      return;
-    }
+    if (isTerminal || status === currentStatus) return;
 
-    if (status === currentStatus) {
-      return;
-    }
-
-    /**
-     * Prevent provider from moving forward
-     * without payment.
-     */
     if (requiresPayment(status) && !isPaid) {
-      toast.error(
-        "Payment is required before updating this order."
-      );
-
+      toast.error("Customer payment is required before advancing this order.");
       return;
     }
 
     try {
       setLoading(true);
-
       const result = await updateStatus(orderId as string, status);
 
-      if(!result.success){
-        toast.error(result.message);
+      if (!result.success) {
+        toast.error(result.message || "Failed to update status");
         return;
       }
 
-      toast.success(result.message);
-
+      toast.success(result.message || "Order status updated successfully");
       router.refresh();
     } catch (error) {
-      console.error(
-        "Failed to update order status:",
-        error
-      );
-
-      toast.error(
-        "Failed to update order status"
-      );
+      console.error("Failed to update order status:", error);
+      toast.error("Failed to update order status");
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Terminal order
-   */
   if (isTerminal) {
     return (
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-xs">
         <div>
-          <p className="text-sm font-medium text-slate-800">
-            Order Status
-          </p>
-
-          <p className="text-xs text-muted-foreground">
-            This order has reached its final status and
-            cannot be updated.
+          <p className="font-semibold text-foreground">Order Lifecycle Concluded</p>
+          <p className="text-muted-foreground">
+            This order has reached its final state and cannot be modified.
           </p>
         </div>
 
-        <div
-          className={
+        <Badge
+          variant="outline"
+          className={`rounded-lg px-3 py-1 text-xs font-semibold ${
             currentStatus === OrderStatus.RETURNED
-              ? "rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700"
-              : "rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700"
-          }
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+              : "border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400"
+          }`}
         >
-          {currentStatus === OrderStatus.RETURNED
-            ? "Returned"
-            : "Cancelled"}
-        </div>
+          {currentStatus === OrderStatus.RETURNED ? (
+            <>
+              <CheckCircle2 className="mr-1.5 size-3.5" />
+              Returned & Completed
+            </>
+          ) : (
+            <>
+              <XCircle className="mr-1.5 size-3.5" />
+              Cancelled
+            </>
+          )}
+        </Badge>
       </div>
     );
   }
 
-  /**
-   * PENDING order
-   *
-   * Provider can confirm or cancel even though
-   * payment hasn't happened yet.
-   */
-  if (currentStatus === OrderStatus.PENDING) {
+  if (currentStatus === OrderStatus.CONFIRMED && !isPaid) {
     return (
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-800">
-            Confirm Order
-          </p>
-
+          <p className="text-xs font-bold text-foreground">Awaiting Customer Payment</p>
           <p className="text-xs text-muted-foreground">
-            Confirm the order to allow the customer to make
-            the payment.
+            You confirmed this order. Equipment handoff is unlocked once the customer completes payment.
           </p>
         </div>
 
-        <div className="flex gap-2">
-          <Select
-            value={status}
-            onValueChange={(value) =>
-              setStatus(value as OrderStatus)
-            }
-            disabled={loading}
-          >
-            <SelectTrigger className="w-40 bg-white">
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              {availableStatuses.map(
-                (statusValue) => (
-                  <SelectItem
-                    key={statusValue}
-                    value={statusValue}
-                  >
-                    {statusLabels[statusValue]}
-                  </SelectItem>
-                )
-              )}
-            </SelectContent>
-          </Select>
-
-          <Button
-            onClick={handleUpdate}
-            disabled={
-              loading ||
-              status === currentStatus
-            }
-            className="bg-emerald-600 hover:bg-emerald-700"
-          >
-            {loading ? 
-              <span className="flex items-center justify-center">
-                <Spinner></Spinner>
-                Updating...
-              </span> : "Update"
-            }
-          </Button>
-        </div>
+        <Badge
+          variant="outline"
+          className="w-fit rounded-lg border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400"
+        >
+          <Lock className="mr-1.5 size-3.5" />
+          Awaiting Payment
+        </Badge>
       </div>
     );
   }
 
-  /**
-   * CONFIRMED but unpaid
-   */
-  if (
-    currentStatus === OrderStatus.CONFIRMED &&
-    !isPaid
-  ) {
-    return (
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-medium text-slate-800">
-            Waiting for Payment
-          </p>
-
-          <p className="text-xs text-muted-foreground">
-            The order is confirmed. Waiting for the customer
-            to complete payment.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-medium text-orange-700">
-          <Lock className="h-4 w-4" />
-          Payment Required
-        </div>
-      </div>
-    );
-  }
-
-  /**
-   * CONFIRMED + PAID
-   *
-   * Provider can now mark it as PICKED_UP
-   * or CANCELLED.
-   */
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="text-sm font-medium text-slate-800">
-          Update Order Status
+        <p className="text-xs font-bold text-foreground">
+          {currentStatus === OrderStatus.PENDING
+            ? "Confirm or Decline Rental"
+            : "Update Handoff Status"}
         </p>
-
         <p className="text-xs text-muted-foreground">
-          Change the status as the rental progresses.
+          {currentStatus === OrderStatus.PENDING
+            ? "Confirm to enable customer payment and reserve this equipment."
+            : "Update status as the customer picks up and returns the equipment."}
         </p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <Select
           value={status}
-          onValueChange={(value) =>
-            setStatus(value as OrderStatus)
-          }
+          onValueChange={(val) => setStatus(val as OrderStatus)}
           disabled={loading}
         >
-          <SelectTrigger className="w-40 bg-white">
+          <SelectTrigger className="w-38 rounded-xl bg-background text-xs font-medium">
             <SelectValue />
           </SelectTrigger>
 
-          <SelectContent>
-            {availableStatuses.map(
-              (statusValue) => (
-                <SelectItem
-                  key={statusValue}
-                  value={statusValue}
-                >
-                  {statusLabels[statusValue]}
-                </SelectItem>
-              )
-            )}
+          <SelectContent className="rounded-xl">
+            {availableStatuses.map((statusValue) => (
+              <SelectItem
+                key={statusValue}
+                value={statusValue}
+                className="text-xs font-medium"
+              >
+                {statusLabels[statusValue]}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
         <Button
+          size="sm"
           onClick={handleUpdate}
-          disabled={
-            loading ||
-            status === currentStatus
-          }
-          className="bg-emerald-600 hover:bg-emerald-700"
+          disabled={loading || status === currentStatus}
+          className="rounded-xl font-semibold shadow-xs text-xs h-9 px-4"
         >
-          {loading && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          {loading ? (
+            <span className="flex items-center gap-1.5">
+              <Loader2 className="size-3.5 animate-spin" />
+              Updating...
+            </span>
+          ) : (
+            "Save"
           )}
-
-          Update
         </Button>
       </div>
     </div>

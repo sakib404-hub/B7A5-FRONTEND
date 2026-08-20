@@ -1,11 +1,15 @@
-import React from 'react'
+import React from "react";
+import { getAllGears } from "@/app/(publicRoutes)/gear/_actions/getAllGear";
+import { AdminGearTable } from "./_components/AdminGearTable";
 
-const ManageGearsPage = () => {
+const ManageGearsPage = async () => {
+  const gears = await getAllGears();
+
   return (
-    <div>
-      This is the manage gear page for the admin.
+    <div className="space-y-6">
+      <AdminGearTable gears={gears || []} />
     </div>
-  )
-}
+  );
+};
 
 export default ManageGearsPage;

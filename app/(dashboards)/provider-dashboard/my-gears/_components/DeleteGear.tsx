@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { deleteGear } from "../_actions/deleteGeat";
+import { deleteGear } from "../_actions/deleteGear";
 
 interface DeleteGearDialogProps {
   gear: {
@@ -29,40 +27,25 @@ interface DeleteGearDialogProps {
   };
 }
 
-export const DeleteGearDialog = ({
-  gear,
-}: DeleteGearDialogProps) => {
+export const DeleteGearDialog = ({ gear }: DeleteGearDialogProps) => {
   const router = useRouter();
-
-  const [isDeleting, setIsDeleting] =
-    useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-
       const result = await deleteGear(gear.id);
 
       if (!result.success) {
-        toast.error(result.message);
+        toast.error(result.message || "Failed to delete gear");
         return;
       }
 
-      toast.success(
-        result.message || "Gear deleted successfully"
-      );
-
-      // Refresh Server Components
+      toast.success(result.message || "Gear deleted successfully");
       router.refresh();
     } catch (error) {
-      console.error(
-        "Delete gear error:",
-        error
-      );
-
-      toast.error(
-        "Something went wrong while deleting the gear."
-      );
+      console.error("Delete gear error:", error);
+      toast.error("Something went wrong while deleting the gear.");
     } finally {
       setIsDeleting(false);
     }
@@ -74,31 +57,33 @@ export const DeleteGearDialog = ({
         <Button
           type="button"
           variant="outline"
-          className="flex-1 gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+          size="sm"
+          className="flex-1 gap-1.5 rounded-xl border-rose-500/30 text-xs font-semibold text-rose-600 hover:bg-rose-500/10 hover:text-rose-700 dark:text-rose-400"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="size-3.5" />
           Delete
         </Button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-2xl border-border/80 bg-card">
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Delete this gear?
+          <AlertDialogTitle className="text-lg font-bold">
+            Delete Equipment Listing?
           </AlertDialogTitle>
 
-          <AlertDialogDescription>
-            Are you sure you want to delete{" "}
+          <AlertDialogDescription className="text-sm text-muted-foreground">
+            Are you sure you want to remove{" "}
             <span className="font-semibold text-foreground">
               {gear.title}
-            </span>
-            ? This action cannot be undone.
+            </span>{" "}
+            from your active listings? This gear will no longer be available for customer rentals.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <AlertDialogFooter>
+        <AlertDialogFooter className="gap-2 sm:gap-0">
           <AlertDialogCancel
             disabled={isDeleting}
+            className="rounded-xl border-border font-medium"
           >
             Cancel
           </AlertDialogCancel>
@@ -106,18 +91,18 @@ export const DeleteGearDialog = ({
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isDeleting}
-            className="gap-2 bg-destructive hover:bg-destructive/90"
+            className="rounded-xl bg-destructive hover:bg-destructive/90 font-medium text-destructive-foreground"
           >
             {isDeleting ? (
-              <>
-                <Spinner />
+              <span className="flex items-center gap-2">
+                <Loader2 className="size-4 animate-spin" />
                 Deleting...
-              </>
+              </span>
             ) : (
-              <>
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </>
+              <span className="flex items-center gap-1.5">
+                <Trash2 className="size-4" />
+                Delete Listing
+              </span>
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

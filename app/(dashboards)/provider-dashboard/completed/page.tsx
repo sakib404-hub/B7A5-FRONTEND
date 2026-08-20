@@ -1,49 +1,45 @@
 import React from "react";
-
 import { getCompletedOrders } from "../_actions/getCompletedOrders";
 import { CompletedOrdersHeader } from "./_components/Header";
-import { CompletedOrderCard, CompletedOrderCardProps } from "./_components/Card";
+import { CompletedOrderCard } from "./_components/Card";
+import { PackageCheck } from "lucide-react";
 
 const CompletedOrdersPage = async () => {
   const result = await getCompletedOrders();
-
-  const orders = result.data;
-  
+  const orders = result?.data || [];
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <CompletedOrdersHeader />
 
-      {/* Orders */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">
-            Completed Orders
+          <h2 className="text-lg font-bold tracking-tight text-foreground">
+            Returned & Settled Archive
           </h2>
-
-          <p className="text-sm text-muted-foreground">
-            Orders that have been successfully returned by customers.
+          <p className="text-xs text-muted-foreground">
+            All rental orders that have been successfully returned, inspected, and finalized.
           </p>
         </div>
 
         {orders.length === 0 ? (
-          <div className="rounded-xl border bg-card p-10 text-center">
-            <p className="font-medium">
-              No completed orders yet
-            </p>
+          <div className="rounded-3xl border border-dashed border-border bg-card p-12 text-center shadow-xs">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <PackageCheck className="size-7" />
+            </div>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-              Completed rental orders will appear here.
+            <h3 className="mt-4 text-base font-bold text-foreground">
+              No completed orders yet
+            </h3>
+
+            <p className="mx-auto mt-1 max-w-sm text-xs text-muted-foreground">
+              When active equipment rentals are returned and marked as completed, their receipts and records will be archived here.
             </p>
           </div>
         ) : (
           <div className="grid gap-4">
-            {orders.map((order : any) => (
-              <CompletedOrderCard
-                key={order.id}
-                order={order}
-              />
+            {orders.map((order: any) => (
+              <CompletedOrderCard key={order.id} order={order} />
             ))}
           </div>
         )}

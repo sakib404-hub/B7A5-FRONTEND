@@ -6,12 +6,9 @@ const MyOrdersPage = async () => {
   const providerOrders = await getProviderOrders();
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-6">
       <OrdersHeader />
-
-      <ProviderOrdersList
-        orders={providerOrders?.data ?? []}
-      />
+      <ProviderOrdersList orders={providerOrders?.data ?? []} />
     </div>
   );
 };

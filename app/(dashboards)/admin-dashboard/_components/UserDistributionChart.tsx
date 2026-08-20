@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   Cell,
   Pie,
@@ -15,7 +14,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-
 import { Users } from "lucide-react";
 
 interface Props {
@@ -32,139 +30,88 @@ export const UserDistributionChart = ({ users }: Props) => {
   ];
 
   const totalUsers = users.customers + users.providers;
-
   const customerPercentage =
-    totalUsers > 0
-      ? Math.round((users.customers / totalUsers) * 100)
-      : 0;
+    totalUsers > 0 ? Math.round((users.customers / totalUsers) * 100) : 0;
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.25 }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
       className="h-full"
     >
-      <Card className="border-border bg-card">
-        {/* Header */}
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="h-full rounded-2xl border border-border/60 bg-card shadow-xs">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div>
-            <CardTitle className="text-base font-semibold">
-              User Distribution
+            <CardTitle className="text-base font-bold text-foreground">
+              User Composition
             </CardTitle>
-
-            <p className="mt-1 text-xs text-muted-foreground">
-              Customers vs providers
+            <p className="text-xs text-muted-foreground">
+              Customer vs Provider account base
             </p>
           </div>
-
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-            <Users className="h-5 w-5 text-primary" />
+          <div className="flex size-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <Users className="size-4.5" />
           </div>
         </CardHeader>
 
-        <CardContent>
-          {/* Chart */}
-          <div className="relative h-[250px]">
+        <CardContent className="space-y-4 pt-2">
+          {/* Donut Chart */}
+          <div className="relative h-56">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   dataKey="value"
                   nameKey="name"
-                  innerRadius={65}
-                  outerRadius={92}
+                  innerRadius={60}
+                  outerRadius={85}
                   paddingAngle={4}
                   cornerRadius={6}
                   stroke="none"
-                  animationBegin={200}
-                  animationDuration={900}
                 >
-                  {data.map((_, index) => (
-                    <Cell
-                      key={index}
-                      fill={
-                        index === 0
-                          ? "hsl(var(--chart-1))"
-                          : "hsl(var(--chart-3))"
-                      }
-                    />
-                  ))}
+                  <Cell fill="oklch(0.6 0.15 220)" />
+                  <Cell fill="oklch(0.65 0.18 280)" />
                 </Pie>
-
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius-md)",
-                    color: "hsl(var(--foreground))",
-                  }}
-                  labelStyle={{
-                    color: "hsl(var(--muted-foreground))",
-                  }}
-                />
+                <Tooltip />
               </PieChart>
             </ResponsiveContainer>
 
-            {/* Center */}
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <motion.p
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  delay: 0.4,
-                  duration: 0.4,
-                }}
-                className="text-3xl font-bold text-foreground"
-              >
+              <span className="text-3xl font-extrabold text-foreground">
                 {totalUsers}
-              </motion.p>
-
-              <p className="text-xs text-muted-foreground">
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                 Total Users
-              </p>
+              </span>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Customers */}
-            <div className="rounded-lg border border-border bg-muted/40 p-3">
-              <div className="mb-1 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[hsl(var(--chart-1))]" />
-
-                <span className="text-xs text-muted-foreground">
-                  Customers
-                </span>
+          {/* Stats Breakdown */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-3">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="size-2 rounded-full bg-blue-500" />
+                <span>Customers</span>
               </div>
-
-              <p className="text-xl font-semibold text-foreground">
+              <p className="mt-1 text-lg font-bold text-foreground">
                 {users.customers}
               </p>
-
-              <p className="mt-1 text-xs text-muted-foreground">
-                {customerPercentage}% of users
+              <p className="text-[11px] text-muted-foreground font-mono">
+                {customerPercentage}% of base
               </p>
             </div>
 
-            {/* Providers */}
-            <div className="rounded-lg border border-border bg-muted/40 p-3">
-              <div className="mb-1 flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[hsl(var(--chart-3))]" />
-
-                <span className="text-xs text-muted-foreground">
-                  Providers
-                </span>
+            <div className="rounded-xl border border-purple-500/30 bg-purple-500/5 p-3">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="size-2 rounded-full bg-purple-500" />
+                <span>Providers</span>
               </div>
-
-              <p className="text-xl font-semibold text-foreground">
+              <p className="mt-1 text-lg font-bold text-foreground">
                 {users.providers}
               </p>
-
-              <p className="mt-1 text-xs text-muted-foreground">
-                {totalUsers > 0
-                  ? 100 - customerPercentage
-                  : 0}
-                % of users
+              <p className="text-[11px] text-muted-foreground font-mono">
+                {totalUsers > 0 ? 100 - customerPercentage : 0}% of base
               </p>
             </div>
           </div>
